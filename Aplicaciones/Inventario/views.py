@@ -4,10 +4,20 @@ from django.contrib import messages
 from .models import Producto
 
 
-# Ver listado de inventario
 def listarInventario(request):
     inventarios = Inventario.objects.select_related('producto').all()
-    return render(request, 'Inventario/inicioInventario.html', {'inventarios': inventarios})
+
+    datos = []
+    for inv in inventarios:
+        datos.append({
+            'nombre': inv.producto.get_nombre_display(),
+            'cantidad': inv.producto.cantidad,
+            'total_pedidos': inv.total_pedidos,
+            'total_ventas': inv.total_ventas,
+            'ultima_actualizacion': inv.ultima_actualizacion,
+        })
+
+    return render(request, 'Inventario/inicioInventario.html', {'datos': datos})
 
 # Vista detallada de un producto en inventario (opcional)
 def detalleInventario(request, id):

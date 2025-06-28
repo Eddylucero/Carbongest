@@ -38,7 +38,7 @@
   </div>
 </div>
 
-<table class="table">
+<table class="table table-bordered">
   <thead class="table-dark">
     <tr>
       <th scope="col">#</th>
@@ -56,9 +56,15 @@
       <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
       <td>{{ pedido.estado|capfirst }}</td>
       <td>
-        <a href="{% url 'detallePedido' pedido.id %}" class="btn btn-sm btn-outline-info">
+        <a href="{% url 'detallePedido' pedido.id %}" class="btn btn-sm btn-outline-info" title="Ver detalle">
           <i class="fa fa-eye"></i>
         </a>
+
+        {% if pedido.estado == "pendiente" %}
+        <a href="{% url 'ventasPedido' pedido.id %}" class="btn btn-sm btn-outline-warning" title="Procesar venta o cancelar">
+          <i class="mdi mdi-cash-register"></i>
+        </a>
+        {% endif %}
       </td>
     </tr>
     {% empty %}

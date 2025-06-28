@@ -1,0 +1,84 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<br>
+<h1 class="text-center text-white">Procesar Pedido #{{ pedido.id }}</h1>
+<hr>
+
+<div class="card bg-dark text-white mb-4">
+  <div class="card-body">
+    <h5 class="card-title">Cliente:</h5>
+    <p class="card-text">{{ pedido.cliente.nombre }}</p>
+
+    <h5 class="card-title">Fecha de creación:</h5>
+    <p class="card-text">{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+
+    <h5 class="card-title">Estado actual:</h5>
+    <p class="card-text">
+      <span class="badge {% if pedido.estado == 'pendiente' %}bg-warning text-dark{% elif pedido.estado == 'entregado' %}bg-success{% else %}bg-danger{% endif %}">
+        {{ pedido.estado|capfirst }}
+      </span>
+    </p>
+
+    {% if pedido.observacion %}
+    <h5 class="card-title">Observaciones:</h5>
+    <p class="card-text">{{ pedido.observacion }}</p>
+    {% endif %}
+  </div>
+</div>
+
+<h5 class="text-white">Productos en el pedido</h5>
+<table class="table table-bordered table-sm text-white">
+  <thead class="table-secondary text-dark">
+    <tr>
+      <th>#</th>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Precio Unitario</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for detalle in detalles %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ detalle.producto.get_nombre_display }} - {{ detalle.producto.presentacion }}</td>
+      <td>{{ detalle.cantidad }}</td>
+      <td>$ {{ detalle.precio_unitario }}</td>
+      <td>$ {{ detalle.subtotal }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if pedido.estado == 'pendiente' %}
+<form method="post" action="{% url 'ventasPedido' pedido.id %}" class="text-center mt-4">
+  {% csrf_token %}
+  <p class="text-white">¿Deseas procesar este pedido como entregado o cancelarlo?</p>
+
+  <input type="hidden" name="estado" id="estado">
+
+  <button type="submit" onclick="setEstado('entregado')" class="btn btn-outline-success me-3">
+    Finalizar Venta <i class="fa fa-check-circle"></i>
+  </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <button type="submit" onclick="setEstado('cancelado')" class="btn btn-outline-danger">
+    Cancelar Pedido <i class="fa fa-times-circle"></i>
+  </button>
+</form>
+{% endif %}
+
+<!-- 👇 Este bloque SIEMPRE se muestra -->
+<div>
+  <a href="{% url 'listarPedidos' %}" class="btn btn-outline-light">
+    <i class="fa fa-arrow-left"></i>Volver al listado
+  </a>
+</div>
+
+<script>
+  function setEstado(valor) {
+    document.getElementById('estado').value = valor;
+  }
+</script>
+
+{% endblock %}

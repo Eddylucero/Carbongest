@@ -7,4 +7,5 @@ urlpatterns = [
     path('guardarPedido/', views.guardarPedido, name='guardarPedido'),
     path('detallePedido/<int:id>/', views.detallePedido, name='detallePedido'),
     path('eliminarPedido/<int:id>/', views.eliminarPedido, name='eliminarPedido'),
+    path('ventasPedido/<int:id>/', views.ventasPedido, name='ventasPedido'),  # 🔥 nueva ruta
 ]

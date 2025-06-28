@@ -19,6 +19,7 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido #{self.id} - {self.cliente.nombre}"
 
+
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
@@ -27,4 +28,4 @@ class DetallePedido(models.Model):
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"{self.producto.nombre} x {self.cantidad}"
+        return f"{self.producto.get_nombre_display()} ({self.producto.presentacion}) x {self.cantidad}"
