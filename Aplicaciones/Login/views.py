@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
 
 def vista_login(request):
     if request.method == 'POST':
@@ -45,3 +46,27 @@ def registro(request):
             return redirect('login')
 
     return render(request, 'Login/registro.html')
+
+@login_required
+def perfil(request):
+    return render(request, 'Login/perfil.html', {
+        'usuario': request.user
+    })
+
+@login_required
+def editar_perfil(request):
+    if request.method == 'POST':
+        user = request.user
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+
+        if username and email:
+            user.username = username
+            user.email = email
+            user.save()
+            messages.success(request, "Perfil actualizado correctamente.")
+            return redirect('perfil')
+        else:
+            messages.warning(request, "Todos los campos son obligatorios.")
+
+    return render(request, 'Login/editarperfil.html', { 'usuario': request.user })

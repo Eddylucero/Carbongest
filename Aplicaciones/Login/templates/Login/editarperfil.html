@@ -1,0 +1,29 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block contenido %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+  <div class="card shadow-sm p-4" style="width: 100%; max-width: 450px;">
+    <form method="POST">
+      {% csrf_token %}
+      <h4 class="text-center mb-4">Editar Perfil</h4>
+
+      <div class="form-group">
+        <label for="username">Nombre de usuario</label>
+        <input type="text" id="username" name="username" value="{{ usuario.username }}" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" value="{{ usuario.email }}" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Guardar cambios</button>
+
+      <div class="text-center mt-3">
+        <a href="{% url 'perfil' %}">← Volver al perfil</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

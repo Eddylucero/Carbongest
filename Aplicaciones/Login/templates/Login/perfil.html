@@ -1,0 +1,23 @@
+{% extends "plantilla.html" %}
+{% load static %}
+
+{% block contenido %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+  <div style="width: 100%; max-width: 450px;">
+
+    <div class="card shadow-sm p-4">
+      <div class="text-center mb-4">
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'editarperfil' %}" class="btn btn-outline-primary btn-sm">Editar</a>
+        </div>
+        <i class="mdi mdi-account-circle" style="font-size: 60px; color: #00bcd4;"></i>
+        <h2>{{ usuario.username }}</h2>
+        <p class="text-muted">Bienvenido a tu perfil personal</p>
+      </div>
+      <p><strong>Nombre de usuario:</strong> {{ usuario.username }}</p>
+      <p><strong>Correo electrónico:</strong> {{ usuario.email }}</p>
+      <p><strong>Fecha de registro:</strong> {{ usuario.date_joined|date:"d/m/Y H:i" }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
