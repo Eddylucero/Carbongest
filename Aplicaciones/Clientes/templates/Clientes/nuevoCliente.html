@@ -1,0 +1,104 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<style>
+  .form-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .form-box {
+    width: 100%;
+    max-width: 700px;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  .form-box .form-control {
+    color: #fff !important;
+  }
+
+  ::placeholder {
+    color: #ccc !important;
+  }
+
+  label {
+    color: #eee;
+  }
+</style>
+
+<div class="form-wrap">
+  <form action="{% url 'guardarCliente' %}" method="post" class="forms-sample form-box" id="formGuardarCliente">
+    {% csrf_token %}
+    <h3 class="text-center text-white mb-4">Agregar Nuevo Cliente</h3>
+
+    <div class="form-group">
+      <label for="nombre">Nombre completo</label>
+      <input type="text" class="form-control p-input" id="nombre" name="nombre" placeholder="Ej. Ana Cedeño" required>
+    </div>
+
+    <div class="form-group">
+      <label for="cedula_o_ruc">Cédula o RUC</label>
+      <input type="text" class="form-control p-input" id="cedula_o_ruc" name="cedula_o_ruc" placeholder="Ej. 0102030405" required>
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input type="text" class="form-control p-input" id="telefono" name="telefono" placeholder="Ej. 0999999999">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input type="email" class="form-control p-input" id="email" name="email" placeholder="correo@ejemplo.com">
+      <small class="form-text text-muted text-success">
+        <i class="fa fa-info-circle me-1"></i> Nunca compartiremos tu correo con terceros.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="direccion">Dirección</label>
+      <input type="text" class="form-control p-input" id="direccion" name="direccion" placeholder="Calle Principal y Secundaria" required>
+    </div>
+
+    <div class="form-group">
+      <label for="ciudad">Ciudad</label>
+      <input type="text" class="form-control p-input" id="ciudad" name="ciudad" placeholder="Ej. Pujilí">
+    </div>
+
+    <div class="form-group">
+      <label for="provincia">Provincia</label>
+      <input type="text" class="form-control p-input" id="provincia" name="provincia" placeholder="Ej. Cotopaxi">
+    </div>
+
+    <div class="form-group">
+      <label for="referencia">Referencia adicional</label>
+      <textarea class="form-control p-input" id="referencia" name="referencia" rows="3" placeholder="Frente al mercado municipal, etc."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo_cliente">Tipo de cliente</label>
+      <select class="form-control p-input" id="tipo_cliente" name="tipo_cliente">
+        <option value="frecuente">Frecuente</option>
+        <option value="ocasional">Ocasional</option>
+        <option value="mayorista">Mayorista</option>
+        <option value="minorista">Minorista</option>
+      </select>
+    </div>
+    <br><br>
+    <div class="text-center">
+      <a href="{% url 'listarClientes' %}" class="btn btn-outline-danger">
+        Cancelar <i class="fa fa-times"></i>
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-outline-success me-2">
+        Guardar Cliente <i class="fa fa-check-circle"></i>
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

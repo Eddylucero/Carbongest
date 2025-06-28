@@ -1,0 +1,105 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<style>
+  .form-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .form-box {
+    width: 100%;
+    max-width: 700px;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  .form-box .form-control {
+    color: #fff !important;
+  }
+
+  ::placeholder {
+    color: #ccc !important;
+  }
+
+  label {
+    color: #eee;
+  }
+</style>
+
+<div class="form-wrap">
+  <form action="{% url 'actualizarCliente' cliente.id %}" method="post" class="forms-sample form-box" id="formEditarCliente">
+    {% csrf_token %}
+    <h3 class="text-center text-white mb-4">Editar Cliente</h3>
+
+    <div class="form-group">
+      <label for="nombre">Nombre completo</label>
+      <input type="text" class="form-control p-input" id="nombre" name="nombre" value="{{ cliente.nombre }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="cedula_o_ruc">Cédula o RUC</label>
+      <input type="text" class="form-control p-input" id="cedula_o_ruc" name="cedula_o_ruc" value="{{ cliente.cedula_o_ruc }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input type="text" class="form-control p-input" id="telefono" name="telefono" value="{{ cliente.telefono }}">
+    </div>
+
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input type="email" class="form-control p-input" id="email" name="email" value="{{ cliente.email }}">
+      <small class="form-text text-muted text-success">
+        <i class="fa fa-info-circle me-1"></i> Nunca compartiremos tu correo con terceros.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="direccion">Dirección</label>
+      <input type="text" class="form-control p-input" id="direccion" name="direccion" value="{{ cliente.direccion }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="ciudad">Ciudad</label>
+      <input type="text" class="form-control p-input" id="ciudad" name="ciudad" value="{{ cliente.ciudad }}">
+    </div>
+
+    <div class="form-group">
+      <label for="provincia">Provincia</label>
+      <input type="text" class="form-control p-input" id="provincia" name="provincia" value="{{ cliente.provincia }}">
+    </div>
+
+    <div class="form-group">
+      <label for="referencia">Referencia adicional</label>
+      <textarea class="form-control p-input" id="referencia" name="referencia" rows="3">{{ cliente.referencia }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo_cliente">Tipo de cliente</label>
+      <select class="form-control p-input" id="tipo_cliente" name="tipo_cliente">
+        <option value="frecuente" {% if cliente.tipo_cliente == 'frecuente' %}selected{% endif %}>Frecuente</option>
+        <option value="ocasional" {% if cliente.tipo_cliente == 'ocasional' %}selected{% endif %}>Ocasional</option>
+        <option value="mayorista" {% if cliente.tipo_cliente == 'mayorista' %}selected{% endif %}>Mayorista</option>
+        <option value="minorista" {% if cliente.tipo_cliente == 'minorista' %}selected{% endif %}>Minorista</option>
+      </select>
+    </div>
+
+    <br><br>
+    <div class="text-center">
+      <a href="{% url 'listarClientes' %}" class="btn btn-outline-danger">
+        Cancelar <i class="fa fa-times"></i>
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-outline-success me-2">
+        Guardar Cambios <i class="fa fa-check-circle"></i>
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
