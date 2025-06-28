@@ -1,0 +1,90 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<style>
+  .form-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .form-box {
+    width: 100%;
+    max-width: 700px;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  .form-box .form-control {
+    color: #fff !important;
+  }
+
+  ::placeholder {
+    color: #ccc !important;
+  }
+
+  label {
+    color: #eee;
+  }
+</style>
+
+<div class="form-wrap">
+  <form action="{% url 'actualizarProducto' producto.id %}" method="post" class="forms-sample form-box" id="formEditarProducto">
+    {% csrf_token %}
+    <h3 class="text-center text-white mb-4">Editar Producto</h3>
+
+    <div class="form-group">
+      <label for="nombre">Nombre del producto</label>
+      <select class="form-control p-input" id="nombre" name="nombre" required>
+        <option value="carbon_vegetal" {% if producto.nombre == 'carbon_vegetal' %}selected{% endif %}>Carbón Vegetal</option>
+        <option value="carbon_mineral" {% if producto.nombre == 'carbon_mineral' %}selected{% endif %}>Carbón Mineral</option>
+        <option value="leña_dura" {% if producto.nombre == 'leña_dura' %}selected{% endif %}>Leña Dura</option>
+        <option value="leña_suave" {% if producto.nombre == 'leña_suave' %}selected{% endif %}>Leña Suave</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">Tipo</label>
+      <input type="text" class="form-control p-input" id="tipo" name="tipo" value="{{ producto.tipo }}">
+    </div>
+
+    <div class="form-group">
+      <label for="peso">Peso (kg)</label>
+      <input type="text" class="form-control p-input" id="peso" name="peso"
+       value="{{ producto.peso }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="presentacion">Presentación</label>
+      <input type="text" class="form-control p-input" id="presentacion" name="presentacion" value="{{ producto.presentacion }}">
+    </div>
+
+    <div class="form-group">
+      <label for="precio">Precio ($)</label>
+      
+<input type="text" class="form-control p-input" id="precio" name="precio"
+       value="{{ producto.precio }}" required>
+    </div>
+
+    <div class="form-group">
+      <label for="cantidad">Cantidad disponible</label>
+      <input type="number" min="0" class="form-control p-input" id="cantidad" name="cantidad" value="{{ producto.cantidad }}" required>
+    </div>
+
+    <br><br>
+    <div class="text-center">
+      <a href="{% url 'listarProductos' %}" class="btn btn-outline-danger">
+        Cancelar <i class="fa fa-times"></i>
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-outline-success me-2">
+        Guardar Cambios <i class="fa fa-check-circle"></i>
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

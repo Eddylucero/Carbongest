@@ -1,0 +1,61 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<br>
+<h1 class="text-center text-white">Detalle del Pedido #{{ pedido.id }}</h1>
+<hr>
+
+<div class="card mb-4 bg-dark text-white">
+  <div class="card-body">
+    <h5 class="card-title">Cliente:</h5>
+    <p class="card-text">{{ pedido.cliente.nombre }}</p>
+
+    <h5 class="card-title">Fecha:</h5>
+    <p class="card-text">{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+
+    <h5 class="card-title">Estado:</h5>
+    <p class="card-text">{{ pedido.estado|capfirst }}</p>
+
+    {% if pedido.observacion %}
+      <h5 class="card-title">Observación:</h5>
+      <p class="card-text">{{ pedido.observacion }}</p>
+    {% endif %}
+  </div>
+</div>
+
+<h5 class="text-white">Productos solicitados</h5>
+<table class="table table-bordered text-white">
+  <thead class="table-secondary text-dark">
+    <tr>
+      <th>#</th>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Precio Unitario</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for detalle in detalles %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ detalle.producto.nombre }}</td>
+      <td>{{ detalle.cantidad }}</td>
+      <td>$ {{ detalle.precio_unitario }}</td>
+      <td>$ {{ detalle.subtotal }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5" class="text-center text-muted">No hay detalles asociados a este pedido.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="text-center mt-4">
+  <a href="{% url 'listarPedidos' %}" class="btn btn-outline-light">
+    <i class="fa fa-arrow-left"></i> Volver al listado
+  </a>
+</div>
+
+{% endblock %}

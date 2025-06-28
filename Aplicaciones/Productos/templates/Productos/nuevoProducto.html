@@ -1,0 +1,88 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<style>
+  .form-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .form-box {
+    width: 100%;
+    max-width: 700px;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  .form-box .form-control {
+    color: #fff !important;
+  }
+
+  ::placeholder {
+    color: #ccc !important;
+  }
+
+  label {
+    color: #eee;
+  }
+</style>
+
+<div class="form-wrap">
+  <form action="{% url 'guardarProducto' %}" method="post" class="forms-sample form-box" id="formGuardarProducto">
+    {% csrf_token %}
+    <h3 class="text-center text-white mb-4">Agregar Nuevo Producto</h3>
+
+    <div class="form-group">
+      <label for="nombre">Nombre del producto</label>
+      <select class="form-control p-input" id="nombre" name="nombre" required>
+        <option value="" disabled selected>Selecciona un tipo</option>
+        <option value="carbon_vegetal">Carbón Vegetal</option>
+        <option value="carbon_mineral">Carbón Mineral</option>
+        <option value="leña_dura">Leña Dura</option>
+        <option value="leña_suave">Leña Suave</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="tipo">Tipo</label>
+      <input type="text" class="form-control p-input" id="tipo" name="tipo" placeholder="Ej. vegetal, mineral, etc.">
+    </div>
+
+    <div class="form-group">
+      <label for="peso">Peso (kg)</label>
+      <input type="number" step="0.01" class="form-control p-input" id="peso" name="peso" placeholder="Ej. 50.00" required>
+    </div>
+
+    <div class="form-group">
+      <label for="presentacion">Presentación</label>
+      <input type="text" class="form-control p-input" id="presentacion" name="presentacion" placeholder="Ej. Saco, Bolsa, etc.">
+    </div>
+
+    <div class="form-group">
+      <label for="precio">Precio ($)</label>
+      <input type="number" step="0.01" class="form-control p-input" id="precio" name="precio" placeholder="Ej. 12.50" required>
+    </div>
+
+    <div class="form-group">
+      <label for="cantidad">Cantidad a agregar</label>
+      <input type="number" class="form-control p-input" id="cantidad" name="cantidad" placeholder="Ej. 100" min="1" required>
+    </div>
+
+    <br><br>
+    <div class="text-center">
+      <a href="{% url 'listarProductos' %}" class="btn btn-outline-danger">
+        Cancelar <i class="fa fa-times"></i>
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-outline-success me-2">
+        Guardar Producto <i class="fa fa-check-circle"></i>
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

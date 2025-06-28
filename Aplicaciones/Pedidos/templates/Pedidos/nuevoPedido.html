@@ -1,0 +1,158 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<style>
+  .form-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .form-box {
+    width: 100%;
+    max-width: 900px;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  .form-box .form-control {
+    color: #fff !important;
+  }
+
+  ::placeholder {
+    color: #ccc !important;
+  }
+
+  label {
+    color: #eee;
+  }
+
+  table th,
+  table td {
+    color: #fff;
+  }
+</style>
+
+<div class="form-wrap">
+  <form action="{% url 'guardarPedido' %}" method="post" class="form-box" id="formGuardarPedido">
+    {% csrf_token %}
+    <h3 class="text-center text-white mb-4">Registrar Nuevo Pedido</h3>
+
+    <div class="form-group mb-3">
+      <label for="cliente">Seleccionar Cliente</label>
+      <select name="cliente" id="cliente" class="form-control" required>
+        <option value="" disabled selected>-- Selecciona un cliente --</option>
+        {% for cliente in clientes %}
+        <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="observacion">Observaciones (opcional)</label>
+      <textarea name="observacion" id="observacion" class="form-control" rows="2" placeholder="Notas adicionales..."></textarea>
+    </div>
+
+    <hr>
+    <h5 class="text-white">Detalle de Productos</h5>
+    <table class="table table-bordered table-sm mt-3">
+      <thead class="table-secondary text-dark">
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="detallePedidoBody">
+        <tr>
+          <td>
+            <select name="producto[]" class="form-control producto-select" required>
+              <option value="" disabled selected>Selecciona</option>
+              {% for producto in productos %}
+              <option value="{{ producto.id }}" data-precio="{{ producto.precio }}">
+                {{ producto.get_nombre_display }} - {{ producto.presentacion }}
+              </option>
+              {% endfor %}
+            </select>
+          </td>
+          <td><input type="number" name="cantidad[]" class="form-control cantidad" min="1" required></td>
+          <td><input type="number" name="precio_unitario[]" class="form-control precio" step="0.01" readonly></td>
+          <td class="subtotal text-white">--</td>
+          <td>
+            <button type="button" class="btn btn-sm btn-outline-danger eliminarFila">
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button type="button" class="btn btn-outline-info mb-3" id="agregarFila">
+      <i class="fa fa-plus"></i> Agregar Producto
+    </button>
+
+    <br><br>
+    <div class="text-center">
+      <a href="{% url 'listarPedidos' %}" class="btn btn-outline-danger">
+        Cancelar <i class="fa fa-times"></i>
+      </a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <button type="submit" class="btn btn-outline-success">
+        Guardar Pedido <i class="fa fa-check-circle"></i>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.getElementById('agregarFila').addEventListener('click', function () {
+    const body = document.getElementById('detallePedidoBody');
+    const fila = body.querySelector('tr').cloneNode(true);
+
+    fila.querySelectorAll('input').forEach(input => input.value = '');
+    fila.querySelector('.subtotal').textContent = '--';
+    fila.querySelector('.producto-select').selectedIndex = 0;
+
+    body.appendChild(fila);
+  });
+
+  document.addEventListener('change', function (e) {
+    if (e.target.classList.contains('producto-select')) {
+      const row = e.target.closest('tr');
+      const selected = e.target.options[e.target.selectedIndex];
+      const precio = parseFloat(selected.getAttribute('data-precio')) || 0;
+      row.querySelector('.precio').value = precio.toFixed(2);
+
+      const cantidad = parseFloat(row.querySelector('.cantidad').value) || 0;
+      const subtotal = cantidad * precio;
+      row.querySelector('.subtotal').textContent = `$ ${subtotal.toFixed(2)}`;
+    }
+  });
+
+  document.addEventListener('input', function (e) {
+    if (e.target.classList.contains('cantidad')) {
+      const row = e.target.closest('tr');
+      const cantidad = parseFloat(e.target.value) || 0;
+      const precio = parseFloat(row.querySelector('.precio').value) || 0;
+      const subtotal = cantidad * precio;
+      row.querySelector('.subtotal').textContent = `$ ${subtotal.toFixed(2)}`;
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.eliminarFila')) {
+      const fila = e.target.closest('tr');
+      const tabla = document.getElementById('detallePedidoBody');
+      if (tabla.rows.length > 1) {
+        fila.remove();
+      }
+    }
+  });
+</script>
+
+{% endblock %}

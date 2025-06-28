@@ -1,0 +1,54 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<br>
+<h1 class="text-center text-white">Inventario Actual</h1>
+<hr>
+
+<table class="table table-bordered table-hover text-white">
+  <thead class="table-dark">
+    <tr>
+      <th>#</th>
+      <th>Producto</th>
+      <th>Cantidad Disponible</th>
+      <th>Stock Mínimo</th>
+      <th>Stock Máximo</th>
+      <th>Última Actualización</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in inventarios %}
+    <tr class="{% if item.cantidad_disponible <= item.stock_minimo %}
+                  table-danger
+               {% elif item.stock_maximo and item.cantidad_disponible > item.stock_maximo %}
+                  table-warning
+               {% else %}
+                  table-success
+               {% endif %}">
+      <td>{{ forloop.counter }}</td>
+      <td>{{ item.producto.nombre }}</td>
+      <td>{{ item.cantidad_disponible }}</td>
+      <td>{{ item.stock_minimo }}</td>
+      <td>{{ item.stock_maximo|default:"--" }}</td>
+      <td>{{ item.ultima_actualizacion|date:"d/m/Y H:i" }}</td>
+      <td>
+        {% if item.cantidad_disponible <= item.stock_minimo %}
+          <span class="badge bg-danger">Bajo</span>
+        {% elif item.stock_maximo and item.cantidad_disponible > item.stock_maximo %}
+          <span class="badge bg-warning text-dark">Exceso</span>
+        {% else %}
+          <span class="badge bg-success">Óptimo</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="7" class="text-center text-muted">No hay productos registrados en inventario.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
