@@ -5,6 +5,8 @@ from .models import Cliente
 # Listar clientes
 def listarClientes(request):
     clientes = Cliente.objects.all()
+    for cliente in clientes:
+        print(f"Cliente: {cliente.nombre}, Tipo: {cliente.tipo_cliente}")
     return render(request, "Clientes/inicioClientes.html", {'clientes': clientes})
 
 # Mostrar formulario para nuevo cliente

@@ -2,79 +2,81 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Producto
 
-# Listar todos los productos
+
 def listarProductos(request):
     productos = Producto.objects.all()
     return render(request, 'Productos/inicioProductos.html', {'productos': productos})
 
-# Mostrar formulario para nuevo producto
+
 def nuevoProducto(request):
     return render(request, 'Productos/nuevoProducto.html')
 
-# Guardar o actualizar cantidad de un producto existente
+
 def guardarProducto(request):
     if request.method == "POST":
-        nombre = request.POST.get('nombre')
-        tipo = request.POST.get('tipo')
-        peso = request.POST.get('peso')
-        presentacion = request.POST.get('presentacion')
-        precio = request.POST.get('precio')
-        cantidad = request.POST.get('cantidad')
-
-        if not nombre or not precio:
-            messages.warning(request, "El nombre y el precio son obligatorios.")
-            return redirect('nuevoProducto')
-
         try:
-            cantidad = int(cantidad)
-            peso = float(peso)
-            precio = float(precio)
-        except ValueError:
-            messages.warning(request, "Verifica que los campos numéricos sean válidos.")
-            return redirect('nuevoProducto')
+            nombre = request.POST.get('nombre')
+            tipo = request.POST.get('tipo')
+            presentacion = request.POST.get('presentacion')
+            peso = request.POST.get('peso', '0')
+            precio = request.POST.get('precio', '0')
+            cantidad = request.POST.get('cantidad', '0')
 
-        producto_existente = Producto.objects.filter(
-            nombre=nombre,
-            presentacion=presentacion
-        ).first()
+            if not all([nombre, tipo, presentacion, peso, precio, cantidad]):
+                return redirect('nuevoProducto')
 
-        if producto_existente:
-            producto_existente.cantidad += cantidad
-            producto_existente.precio = precio  # opcional: actualiza precio
-            producto_existente.tipo = tipo
-            producto_existente.peso = peso
-            producto_existente.save()
-            messages.success(request, "Cantidad agregada al producto existente.")
-        else:
-            Producto.objects.create(
+            peso_limpio = ''.join(filter(lambda x: x.isdigit() or x == '.', peso))
+            
+            try:
+                peso = float(peso_limpio) if peso_limpio else 0.0
+                precio = float(precio) if precio else 0.0
+                cantidad = int(cantidad) if cantidad else 0
+            except (ValueError, TypeError):
+                return redirect('nuevoProducto')
+
+            producto_existente = Producto.objects.filter(
                 nombre=nombre,
                 tipo=tipo,
-                peso=peso,
-                presentacion=presentacion,
-                precio=precio,
-                cantidad=cantidad
-            )
-            messages.success(request, "Producto registrado correctamente.")
+                presentacion=presentacion
+            ).first()
 
-        return redirect('listarProductos')
+            if producto_existente:
+                producto_existente.cantidad += cantidad
+                producto_existente.precio = precio
+                producto_existente.save()
+                messages.success(request, f"Se agregaron {cantidad} unidades al producto existente")
+            else:
+                Producto.objects.create(
+                    nombre=nombre,
+                    tipo=tipo,
+                    presentacion=presentacion,
+                    peso=peso,
+                    precio=precio,
+                    cantidad=cantidad
+                )
+                messages.success(request, "Producto creado exitosamente")
+
+            return redirect('listarProductos')
+
+        except Exception as e:
+            return redirect('nuevoProducto')
 
     return redirect('listarProductos')
 
-# Eliminar producto
+
 def eliminarProducto(request, id):
     producto = get_object_or_404(Producto, id=id)
     producto.delete()
-    messages.success(request, "Producto eliminado.")
+    messages.success(request, "Producto eliminado correctamente")
     return redirect('listarProductos')
 
-# Mostrar producto para editar
+
 def editarProducto(request, id):
     producto = get_object_or_404(Producto, id=id)
-    print(">>> peso:", producto.peso)
-    print(">>> precio:", producto.precio)
+
     return render(request, 'Productos/editarProducto.html', {'producto': producto})
 
-# Actualizar producto editado
+
 def actualizarProducto(request, id):
     producto = get_object_or_404(Producto, id=id)
 
@@ -82,21 +84,22 @@ def actualizarProducto(request, id):
         try:
             producto.nombre = request.POST.get('nombre')
             producto.tipo = request.POST.get('tipo')
-
-            # Reemplaza la coma por punto antes de convertir
-            peso_str = request.POST.get('peso').replace(',', '.')
-            precio_str = request.POST.get('precio').replace(',', '.')
-
-            producto.peso = float(peso_str)
-            producto.precio = float(precio_str)
-
+            
             producto.presentacion = request.POST.get('presentacion')
-            producto.cantidad = int(request.POST.get('cantidad'))
+
+            peso_str = request.POST.get('peso', '0').replace(',', '.')
+            producto.peso = float(''.join(filter(lambda x: x.isdigit() or x == '.', peso_str))) if peso_str else 0.0
+            
+            precio_str = request.POST.get('precio', '0').replace(',', '.')
+            producto.precio = float(precio_str) if precio_str else 0.0
+            
+            cantidad_str = request.POST.get('cantidad', '0')
+            producto.cantidad = int(cantidad_str) if cantidad_str else 0
 
             producto.save()
-            messages.success(request, "Producto actualizado correctamente.")
+            messages.success(request, "Producto actualizado correctamente")
         except Exception as e:
-            messages.warning(request, f"Error al actualizar: {e}")
+            messages.error(request, f"Error al actualizar: {str(e)}")
 
         return redirect('listarProductos')
 

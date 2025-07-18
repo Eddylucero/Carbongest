@@ -39,7 +39,7 @@
 </div>
 
 
-<table class="table table-bordered">
+<table class="table table-bordered" id ="tbl-clientes">
   <thead class="table-dark">
     <tr>
       <th scope="col">#</th>
@@ -59,7 +59,7 @@
       <td>{{ cliente.cedula_o_ruc }}</td>
       <td>{{ cliente.telefono }}</td>
       <td>{{ cliente.email }}</td>
-      <td>{{ cliente.tipo_cliente|capfirst }}</td>
+      <td>{{ cliente.get_tipo_cliente_display|default:"No especificado" }}</td>
       <td>
         <a href="{% url 'editarCliente' cliente.id %}" class="btn btn-sm btn-outline-warning">
           <i class="fa fa-pen"></i>
@@ -77,4 +77,16 @@
   </tbody>
 </table>
 
+<script>
+    let table = new DataTable('#tbl-clientes', {
+    layout: {
+        topStart: {
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        }
+    },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
+    },
+});
+</script>
 {% endblock %}

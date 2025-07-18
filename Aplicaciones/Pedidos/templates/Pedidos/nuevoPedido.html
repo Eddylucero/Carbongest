@@ -47,7 +47,7 @@
 
     <div class="form-group mb-3">
       <label for="cliente">Seleccionar Cliente</label>
-      <select name="cliente" id="cliente" class="form-control" required>
+      <select name="cliente" id="cliente" class="form-control">
         <option value="" disabled selected>-- Selecciona un cliente --</option>
         {% for cliente in clientes %}
         <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
@@ -75,7 +75,7 @@
       <tbody id="detallePedidoBody">
         <tr>
           <td>
-            <select name="producto[]" class="form-control producto-select" required>
+            <select name="producto[]" class="form-control producto-select" id="producto">
               <option value="" disabled selected>Selecciona</option>
               {% for producto in productos %}
               <option value="{{ producto.id }}" data-precio="{{ producto.precio }}">
@@ -84,7 +84,7 @@
               {% endfor %}
             </select>
           </td>
-          <td><input type="number" name="cantidad[]" class="form-control cantidad" min="1" required></td>
+          <td><input type="number" name="cantidad[]" class="form-control cantidad" min="1"></td>
           <td><input type="number" name="precio_unitario[]" class="form-control precio" step="0.01" readonly></td>
           <td class="subtotal text-white">--</td>
           <td>
@@ -154,6 +154,44 @@
       const tabla = document.getElementById('detallePedidoBody');
       if (tabla.rows.length > 1) {
         fila.remove();
+      }
+    }
+  });
+</script>
+
+<script>
+  // Validación del formulario
+  $("#formGuardarPedido").validate({
+    rules: {
+      observacion: {
+        required: true
+      },
+      cliente: {
+        required: true
+      },
+      "producto[]": {
+        required: true
+      },
+      'cantidad[]': {
+        required: true,
+        digits: true,
+        min: 1
+      }
+    },
+    messages: {
+      observacion: {
+        required: "Por favor ingrese la observación"
+      },
+      cliente: {
+        required: "Por favor seleccione un cliente"
+      },
+      'producto[]': {
+        required: "Por favor seleccione un producto"
+      },
+      'cantidad[]': {
+        required: "Ingrese la cantidad",
+        digits: "Debe ser un número entero",
+        min: "La cantidad mínima es 1"
       }
     }
   });

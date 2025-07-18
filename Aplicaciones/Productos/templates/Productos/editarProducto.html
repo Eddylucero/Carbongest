@@ -29,6 +29,14 @@
   label {
     color: #eee;
   }
+  input[readonly], select[disabled] {
+    background-color: transparent !important;
+    opacity: 1 !important;
+  }
+  .error {
+    color: #ff6b6b;
+    font-size: 0.9em;
+  }
 </style>
 
 <div class="form-wrap">
@@ -38,40 +46,46 @@
 
     <div class="form-group">
       <label for="nombre">Nombre del producto</label>
-      <select class="form-control p-input" id="nombre" name="nombre" required>
-        <option value="carbon_vegetal" {% if producto.nombre == 'carbon_vegetal' %}selected{% endif %}>Carbón Vegetal</option>
-        <option value="carbon_mineral" {% if producto.nombre == 'carbon_mineral' %}selected{% endif %}>Carbón Mineral</option>
-        <option value="leña_dura" {% if producto.nombre == 'leña_dura' %}selected{% endif %}>Leña Dura</option>
-        <option value="leña_suave" {% if producto.nombre == 'leña_suave' %}selected{% endif %}>Leña Suave</option>
+      <select class="form-control p-input" id="nombre" name="nombre" disabled required>
+        <option value="Eucalipto" {% if producto.nombre == 'Eucalipto' %}selected{% endif %}>Eucalipto</option>
+        <option value="Pino" {% if producto.nombre == 'Pino' %}selected{% endif %}>Pino</option>
       </select>
     </div>
 
     <div class="form-group">
       <label for="tipo">Tipo</label>
-      <input type="text" class="form-control p-input" id="tipo" name="tipo" value="{{ producto.tipo }}">
-    </div>
-
-    <div class="form-group">
-      <label for="peso">Peso (kg)</label>
-      <input type="text" class="form-control p-input" id="peso" name="peso"
-       value="{{ producto.peso }}" required>
+      <select class="form-control p-input" id="tipo" name="tipo" required>
+        <option value="Carbón duro" {% if producto.tipo == 'Carbón duro' %}selected{% endif %}>Carbón duro</option>
+        <option value="Carboncillo duro" {% if producto.tipo == 'Carboncillo duro' %}selected{% endif %}>Carboncillo duro</option>
+        <option value="Carboncillo con polvo" {% if producto.tipo == 'Carboncillo con polvo' %}selected{% endif %}>Carboncillo con polvo</option>
+        <option value="Ceniza" {% if producto.tipo == 'Ceniza' %}selected{% endif %}>Ceniza</option>
+      </select>
     </div>
 
     <div class="form-group">
       <label for="presentacion">Presentación</label>
-      <input type="text" class="form-control p-input" id="presentacion" name="presentacion" value="{{ producto.presentacion }}">
+      <select class="form-control p-input" id="presentacion" name="presentacion" required>
+        <option value="Fundas de 2 kg" {% if producto.presentacion == 'Fundas de 2 kg' %}selected{% endif %}>Fundas de 2 kg</option>
+        <option value="Medio Quintal 15 kg" {% if producto.presentacion == 'Medio Quintal 15 kg' %}selected{% endif %}>Medio Quintal 15 kg</option>
+        <option value="Quintal 30 kg" {% if producto.presentacion == 'Quintal 30 kg' %}selected{% endif %}>Quintal 30 kg</option>
+        <option value="Quintal Grande 40 kg" {% if producto.presentacion == 'Quintal Grande 40 kg' %}selected{% endif %}>Quintal Grande 40 kg</option>
+        <option value="Bulto 100 lb" {% if producto.presentacion == 'Bulto 100 lb' %}selected{% endif %}>Bulto 100 lb</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="peso">Peso</label>
+      <input type="text" class="form-control p-input" id="peso" name="peso" value="{{ producto.peso }}" readonly>
     </div>
 
     <div class="form-group">
       <label for="precio">Precio ($)</label>
-      
-<input type="text" class="form-control p-input" id="precio" name="precio"
-       value="{{ producto.precio }}" required>
+      <input type="text" class="form-control p-input" id="precio" name="precio" value="{{ producto.precio }}">
     </div>
 
     <div class="form-group">
       <label for="cantidad">Cantidad disponible</label>
-      <input type="number" min="0" class="form-control p-input" id="cantidad" name="cantidad" value="{{ producto.cantidad }}" required>
+      <input type="number" class="form-control p-input" id="cantidad" name="cantidad" value="{{ producto.cantidad }}">
     </div>
 
     <br><br>
@@ -87,4 +101,73 @@
   </form>
 </div>
 
+
+<script>
+  $(document).ready(function() {
+    // Mapeo de tipos a pesos
+    const pesosPorTipo = {
+      "Carbón duro": "30 kg",
+      "Carboncillo duro": "30 kg",
+      "Carboncillo con polvo": "30 kg",
+      "Ceniza": "100 lb",
+      "Carbón suave": "2 kg",
+      "Carboncillo suave": "30 kg"
+    };
+
+    // Actualizar peso cuando cambia el tipo
+    $('#tipo').on('change', function() {
+      const tipoSeleccionado = $(this).val();
+      if (pesosPorTipo[tipoSeleccionado]) {
+        $('#peso').val(pesosPorTipo[tipoSeleccionado]);
+      }
+    });
+
+    // Actualizar peso al cargar si ya hay un tipo seleccionado
+    const tipoInicial = $('#tipo').val();
+    if (tipoInicial && pesosPorTipo[tipoInicial]) {
+      $('#peso').val(pesosPorTipo[tipoInicial]);
+    }
+  });
+</script>
+<script>
+  // Configuración de validación
+    $("#formEditarProducto").validate({
+      rules: {
+        tipo: {
+          required: true
+        },
+        presentacion: {
+          required: true
+        },
+        precio: {
+          required: true,
+          number: true,
+          min: 0.01
+        },
+        cantidad: {
+          required: true,
+          digits: true,
+          min: 1
+        }
+      },
+      messages: {
+        tipo: {
+          required: "Por favor seleccione un tipo"
+        },
+        presentacion: {
+          required: "Por favor seleccione una presentación"
+        },
+        precio: {
+          required: "Ingrese el precio",
+          number: "Debe ser un número válido",
+          min: "El precio mínimo es 0.01"
+        },
+        cantidad: {
+          required: "Ingrese la cantidad",
+          digits: "Debe ser un número entero",
+          min: "La cantidad mínima es 1"
+        }
+      }
+    });
+</script>
 {% endblock %}

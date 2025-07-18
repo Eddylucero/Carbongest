@@ -29,6 +29,13 @@
   label {
     color: #eee;
   }
+  input[readonly] {
+    background-color: transparent !important;
+  }
+  .error {
+    color: #ff6b6b;
+    font-size: 0.9em;
+  }
 </style>
 
 <div class="form-wrap">
@@ -37,39 +44,41 @@
     <h3 class="text-center text-white mb-4">Agregar Nuevo Producto</h3>
 
     <div class="form-group">
-      <label for="nombre">Nombre del producto</label>
-      <select class="form-control p-input" id="nombre" name="nombre" required>
-        <option value="" disabled selected>Selecciona un tipo</option>
-        <option value="carbon_vegetal">Carbón Vegetal</option>
-        <option value="carbon_mineral">Carbón Mineral</option>
-        <option value="leña_dura">Leña Dura</option>
-        <option value="leña_suave">Leña Suave</option>
+      <label for="producto">Nombre del producto</label>
+      <select class="form-control p-input" id="producto" name="nombre">
+        <option value="" disabled selected>Selecciona un producto</option>
+        <option value="Eucalipto">Eucalipto</option>
+        <option value="Pino">Pino</option>
       </select>
     </div>
 
     <div class="form-group">
       <label for="tipo">Tipo</label>
-      <input type="text" class="form-control p-input" id="tipo" name="tipo" placeholder="Ej. vegetal, mineral, etc.">
-    </div>
-
-    <div class="form-group">
-      <label for="peso">Peso (kg)</label>
-      <input type="number" step="0.01" class="form-control p-input" id="peso" name="peso" placeholder="Ej. 50.00" required>
+      <select class="form-control p-input" id="tipo" name="tipo" disabled>
+        <option value="" disabled selected>Selecciona un tipo</option>
+      </select>
     </div>
 
     <div class="form-group">
       <label for="presentacion">Presentación</label>
-      <input type="text" class="form-control p-input" id="presentacion" name="presentacion" placeholder="Ej. Saco, Bolsa, etc.">
+      <select class="form-control p-input" id="presentacion" name="presentacion" disabled>
+        <option value="" disabled selected>Se llenará automáticamente</option>
+      </select>
     </div>
 
     <div class="form-group">
-      <label for="precio">Precio ($)</label>
-      <input type="number" step="0.01" class="form-control p-input" id="precio" name="precio" placeholder="Ej. 12.50" required>
+      <label for="peso">Peso</label>
+      <input type="text" class="form-control p-input" id="peso" name="peso" readonly>
+    </div>
+
+    <div class="form-group">
+      <label for="precio">Precio</label>
+      <input type="number" step="0.01" class="form-control p-input" id="precio" name="precio" placeholder="Ej. 15.50" min="0.01">
     </div>
 
     <div class="form-group">
       <label for="cantidad">Cantidad a agregar</label>
-      <input type="number" class="form-control p-input" id="cantidad" name="cantidad" placeholder="Ej. 100" min="1" required>
+      <input type="number" class="form-control p-input" id="cantidad" name="cantidad" placeholder="Ej. 100" min="1">
     </div>
 
     <br><br>
@@ -85,4 +94,153 @@
   </form>
 </div>
 
+<script>
+  $(document).ready(function() {
+    // Estructura de datos completa
+    const productosData = {
+      "Eucalipto": {
+        "Carbón duro": {
+          presentaciones: ["Quintal 30 kg", "Quintal Grande 40 kg"],
+          peso: "30 kg"
+        },
+        "Carboncillo duro": {
+          presentaciones: ["Quintal 30 kg"],
+          peso: "30 kg"
+        },
+        "Carboncillo con polvo": {
+          presentaciones: ["Quintal 30 kg"],
+          peso: "30 kg"
+        },
+        "Ceniza": {
+          presentaciones: ["Bulto 100 lb"],
+          peso: "100 lb"
+        }
+      },
+      "Pino": {
+        "Carbón suave": {
+          presentaciones: ["Fundas de 2 kg"],
+          peso: "2 kg"
+        },
+        "Carboncillo suave": {
+          presentaciones: ["Quintal 30 kg"],
+          peso: "30 kg"
+        },
+        "Carboncillo con polvo": {
+          presentaciones: ["Quintal 30 kg"],
+          peso: "30 kg"
+        },
+        "Ceniza": {
+          presentaciones: ["Bulto 100 lb"],
+          peso: "100 lb"
+        }
+      }
+    };
+
+    // Cuando cambia el producto
+    $('#producto').on('change', function() {
+      const producto = $(this).val();
+      const tipoSelect = $('#tipo');
+      const presentacionSelect = $('#presentacion');
+      const pesoInput = $('#peso');
+
+      // Resetear campos dependientes
+      tipoSelect.empty().append('<option value="" disabled selected>Selecciona un tipo</option>');
+      presentacionSelect.empty().append('<option value="" disabled selected>Se llenará automáticamente</option>');
+      pesoInput.val('');
+      
+      // Habilitar/deshabilitar selects
+      tipoSelect.prop('disabled', false);
+      presentacionSelect.prop('disabled', true);
+
+      // Llenar tipos disponibles para el producto seleccionado
+      if (productosData[producto]) {
+        $.each(productosData[producto], function(tipo, datos) {
+          tipoSelect.append(`<option value="${tipo}">${tipo}</option>`);
+        });
+      }
+    });
+
+    // Cuando cambia el tipo
+    $('#tipo').on('change', function() {
+      const producto = $('#producto').val();
+      const tipo = $(this).val();
+      const presentacionSelect = $('#presentacion');
+      const pesoInput = $('#peso');
+
+      // Resetear campos dependientes
+      presentacionSelect.empty();
+      pesoInput.val('');
+
+      if (producto && tipo && productosData[producto] && productosData[producto][tipo]) {
+        const datosTipo = productosData[producto][tipo];
+        
+        // Llenar presentaciones disponibles
+        datosTipo.presentaciones.forEach(function(presentacion) {
+          presentacionSelect.append(`<option value="${presentacion}">${presentacion}</option>`);
+        });
+        
+        // Autocompletar peso
+        pesoInput.val(datosTipo.peso);
+        
+        // Habilitar presentación
+        presentacionSelect.prop('disabled', false);
+      } else {
+        presentacionSelect.append('<option value="" disabled selected>No hay presentaciones</option>');
+        presentacionSelect.prop('disabled', true);
+      }
+    });
+  });
+</script>
+<script>
+      // Validación del formulario
+    $("#formGuardarProducto").validate({
+      rules: {
+        nombre: {
+          required: true
+        },
+        tipo: {
+          required: true
+        },
+        presentacion: {
+          required: true
+        },
+        precio: {
+          required: true,
+          number: true,
+          min: 0.01
+        },
+        cantidad: {
+          required: true,
+          digits: true,
+          min: 1
+        }
+      },
+      messages: {
+        nombre: {
+          required: "Seleccione un producto"
+        },
+        tipo: {
+          required: "Seleccione un tipo"
+        },
+        presentacion: {
+          required: "La presentación es requerida"
+        },
+        precio: {
+          required: "Ingrese el precio",
+          number: "Debe ser un número válido",
+          min: "El precio mínimo es 0.01"
+        },
+        cantidad: {
+          required: "Ingrese la cantidad",
+          digits: "Debe ser un número entero",
+          min: "La cantidad mínima es 1"
+        }
+      },
+      errorElement: "span",
+      errorClass: "error",
+      errorPlacement: function(error, element) {
+        error.insertAfter(element);
+      }
+    });
+</script>
 {% endblock %}

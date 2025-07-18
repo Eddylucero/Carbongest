@@ -38,12 +38,12 @@
 
     <div class="form-group">
       <label for="nombre">Nombre completo</label>
-      <input type="text" class="form-control p-input" id="nombre" name="nombre" value="{{ cliente.nombre }}" required>
+      <input type="text" class="form-control p-input" id="nombre" name="nombre" value="{{ cliente.nombre }}">
     </div>
 
     <div class="form-group">
       <label for="cedula_o_ruc">Cédula o RUC</label>
-      <input type="text" class="form-control p-input" id="cedula_o_ruc" name="cedula_o_ruc" value="{{ cliente.cedula_o_ruc }}" required>
+      <input type="text" class="form-control p-input" id="cedula_o_ruc" name="cedula_o_ruc" value="{{ cliente.cedula_o_ruc }}">
     </div>
 
     <div class="form-group">
@@ -61,7 +61,7 @@
 
     <div class="form-group">
       <label for="direccion">Dirección</label>
-      <input type="text" class="form-control p-input" id="direccion" name="direccion" value="{{ cliente.direccion }}" required>
+      <input type="text" class="form-control p-input" id="direccion" name="direccion" value="{{ cliente.direccion }}">
     </div>
 
     <div class="form-group">
@@ -101,5 +101,94 @@
     </div>
   </form>
 </div>
+
+<script>
+  // Configuración de validación
+  $("#formEditarCliente").validate({
+    rules: {
+      nombre: {
+        required: true,
+        minlength: 3,
+        maxlength: 100
+      },
+      cedula_o_ruc: {
+        required: true,
+        minlength: 10,
+        maxlength: 13,
+        digits: true
+      },
+      telefono: {
+        minlength: 7,
+        maxlength: 15,
+        digits: true,
+        required: true
+      },
+      email: {
+        email: true,
+        required: true
+      },
+      direccion: {
+        required: true,
+        minlength: 5,
+        maxlength: 200,
+        required: true
+      },
+      ciudad: {
+        minlength: 3,
+        maxlength: 50,
+        required: true
+      },
+      provincia: {
+        minlength: 3,
+        maxlength: 50,
+        required: true
+      },
+      referencia: {
+        required: true
+      }
+    },
+    messages: {
+      nombre: {
+        required: "Por favor ingrese el nombre completo",
+        minlength: "El nombre debe tener al menos 3 caracteres",
+        maxlength: "El nombre no puede exceder los 100 caracteres"
+      },
+      cedula_o_ruc: {
+        required: "Por favor ingrese la cédula o RUC",
+        minlength: "La cédula/RUC debe tener al menos 10 dígitos",
+        maxlength: "La cédula/RUC no puede exceder los 13 dígitos",
+        digits: "Solo se permiten números"
+      },
+      telefono: {
+        required: "Por favor ingrese el teléfono",
+        minlength: "El teléfono debe tener al menos 7 dígitos",
+        maxlength: "El teléfono no puede exceder los 15 dígitos",
+        digits: "Solo se permiten números"
+      },
+      email: {
+        email: "Por favor ingrese un correo electrónico válido",
+        required: "Por favor ingrese un correo electrónico"
+      },
+      direccion: {
+        required: "Por favor ingrese la dirección",
+        minlength: "La dirección debe tener al menos 5 caracteres",
+        maxlength: "La dirección no puede exceder los 200 caracteres"
+      },
+      ciudad: {
+        required: "Por favor ingrese la ciudad",
+        minlength: "La ciudad debe tener al menos 3 caracteres",
+        maxlength: "La ciudad no puede exceder los 50 caracteres"
+      },
+      provincia: {
+        required: "Por favor ingrese la provincia",
+        minlength: "La provincia debe tener al menos 3 caracteres",
+        maxlength: "La provincia no puede exceder los 50 caracteres"
+      },
+      referencia: {
+        required: "Por favor ingrese la referencia"
+      }
+    }
+  });
+</script>
 
 {% endblock %}

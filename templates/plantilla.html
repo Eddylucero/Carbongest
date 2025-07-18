@@ -6,6 +6,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>CarbonGest</title>
+    <!-- ✅ jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+
+    <!-- DataTables CSS y JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+
+    <!-- Librerías para exportación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.print.min.js"></script>
+
+      <!-- CSS para los botones -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.min.css">
+    
+    <!-- Librerías para exportación de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <!-- plugins:css -->
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/mdi/css/materialdesignicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/css/vendor.bundle.base.css' %}">
@@ -16,10 +38,10 @@
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/owl-carousel-2/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/owl-carousel-2/owl.theme.default.min.css' %}">
     <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
+
     <!-- Layout styles -->
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/css/style.css' %}">
+
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{% static 'plantilla/corona/template/assets/images/favicon.png' %}" />
     <!-- ✅ SweetAlert2 (Ventanas emergentes) -->
@@ -329,6 +351,17 @@
     .custom-swal-icon {
       margin: 0 auto 10px auto !important;
       transform: scale(1.1);
+    }
+    .error {
+      color: red;
+      font-family: 'Montserrat';
+      padding-top: 5px;
+      margin-top: 2px;
+      display: block;
+    }
+    .form-control.error {
+      border: 1px solid red;
+       margin-bottom: 5px;
     }
   </style>
 

@@ -2,60 +2,209 @@
 {% load static %}
 {% block contenido %}
 
+<style>
+  /* Estilos para impresión */
+  @media print {
+    body {
+      background-color: white !important;
+      color: black !important;
+      font-size: 12pt;
+    }
+    
+    #contenido-pdf {
+      width: 210mm; /* Ancho A4 */
+      min-height: 297mm; /* Alto A4 */
+      padding: 15mm;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    
+    .text-white, .text-white * {
+      color: black !important;
+    }
+    
+    .bg-dark {
+      background-color: transparent !important;
+      border: 1px solid #ddd !important;
+    }
+    
+    .table-bordered {
+      border: 1px solid #ddd !important;
+    }
+    
+    .table-bordered th,
+    .table-bordered td {
+      border: 1px solid #ddd !important;
+      color: black !important;
+    }
+    
+    .table-secondary {
+      background-color: #f2f2f2 !important;
+    }
+    
+    hr {
+      border-color: #ddd !important;
+    }
+    
+    /* Ocultar botones en impresión */
+    .no-print {
+      display: none !important;
+    }
+    
+    /* Optimizar espacio y evitar cortes */
+    table {
+      page-break-inside: auto;
+      width: 100%;
+    }
+    
+    tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+    
+    /* Mejorar tipografía para impresión */
+    h1 {
+      font-size: 18pt;
+      text-align: center;
+    }
+    
+    h5 {
+      font-size: 14pt;
+    }
+    
+    .card-title {
+      font-weight: bold;
+    }
+  }
+
+  /* Estilos para visualización en pantalla */
+  @media screen {
+    #contenido-pdf {
+      background-color: #343a40;
+      padding: 20px;
+      border-radius: 5px;
+    }
+  }
+</style>
+
 <br>
 <h1 class="text-center text-white">Detalle del Pedido #{{ pedido.id }}</h1>
 <hr>
 
-<div class="card mb-4 bg-dark text-white">
-  <div class="card-body">
-    <h5 class="card-title">Cliente:</h5>
-    <p class="card-text">{{ pedido.cliente.nombre }}</p>
+<!-- Contenido que se imprimirá/guardará en PDF -->
+<div id="contenido-pdf">
+  <div class="card mb-4 bg-dark text-white">
+    <div class="card-body">
+      <h5 class="card-title">Cliente:</h5>
+      <p class="card-text">{{ pedido.cliente.nombre }}</p>
 
-    <h5 class="card-title">Fecha:</h5>
-    <p class="card-text">{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+      <h5 class="card-title">Fecha:</h5>
+      <p class="card-text">{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
 
-    <h5 class="card-title">Estado:</h5>
-    <p class="card-text">{{ pedido.estado|capfirst }}</p>
+      <h5 class="card-title">Estado:</h5>
+      <p class="card-text">{{ pedido.estado|capfirst }}</p>
 
-    {% if pedido.observacion %}
-      <h5 class="card-title">Observación:</h5>
-      <p class="card-text">{{ pedido.observacion }}</p>
-    {% endif %}
+      {% if pedido.observacion %}
+        <h5 class="card-title">Observación:</h5>
+        <p class="card-text">{{ pedido.observacion }}</p>
+      {% endif %}
+    </div>
   </div>
+
+  <h5 class="text-white">Productos solicitados</h5>
+  <table class="table table-bordered text-white">
+    <thead class="table-secondary text-dark">
+      <tr>
+        <th>#</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for detalle in detalles %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ detalle.producto.nombre }}</td>
+        <td>{{ detalle.cantidad }}</td>
+        <td>$ {{ detalle.precio_unitario|floatformat:2 }}</td>
+        <td>$ {{ detalle.subtotal|floatformat:2 }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center">No hay detalles asociados a este pedido.</td>
+      </tr>
+      {% endfor %}
+      <!-- Agregar totales -->
+      <tr>
+        <td colspan="4" class="text-right"><strong>Subtotal:</strong></td>
+        <td>$ {{ pedido.subtotal|floatformat:2 }}</td>
+      </tr>
+      <tr>
+        <td colspan="4" class="text-right"><strong>IVA (12%):</strong></td>
+        <td>$ {{ pedido.iva|floatformat:2 }}</td>
+      </tr>
+      <tr>
+        <td colspan="4" class="text-right"><strong>Total:</strong></td>
+        <td>$ {{ pedido.total|floatformat:2 }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<h5 class="text-white">Productos solicitados</h5>
-<table class="table table-bordered text-white">
-  <thead class="table-secondary text-dark">
-    <tr>
-      <th>#</th>
-      <th>Producto</th>
-      <th>Cantidad</th>
-      <th>Precio Unitario</th>
-      <th>Subtotal</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for detalle in detalles %}
-    <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ detalle.producto.nombre }}</td>
-      <td>{{ detalle.cantidad }}</td>
-      <td>$ {{ detalle.precio_unitario }}</td>
-      <td>$ {{ detalle.subtotal }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="5" class="text-center text-muted">No hay detalles asociados a este pedido.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<div class="text-center mt-4">
+<!-- Botones (no se imprimirán) -->
+<div class="text-center mt-4 no-print">
   <a href="{% url 'listarPedidos' %}" class="btn btn-outline-light">
     <i class="fa fa-arrow-left"></i> Volver al listado
   </a>
+
+  &nbsp;&nbsp;
+
+  <button class="btn btn-outline-primary" id="btn-imprimir">
+    <i class="fa fa-print"></i> Imprimir / Guardar PDF
+  </button>
 </div>
+
+<!-- Script de impresión con html2pdf optimizado para A4 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  document.getElementById('btn-imprimir').addEventListener('click', function() {
+    const element = document.getElementById('contenido-pdf');
+    const opt = {
+      margin: [10, 5, 10, 5], // [top, left, bottom, right] en mm
+      filename: 'pedido_{{ pedido.id }}.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        letterRendering: true,
+        useCORS: true
+      },
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait'
+      },
+      pagebreak: { 
+        mode: ['avoid-all', 'css', 'legacy'] 
+      }
+    };
+    
+    // Mostrar loader mientras se genera
+    const originalText = this.innerHTML;
+    this.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Generando PDF...';
+    this.disabled = true;
+    
+    // Generar PDF
+    html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
+      // Restaurar botón
+      document.getElementById('btn-imprimir').innerHTML = originalText;
+      document.getElementById('btn-imprimir').disabled = false;
+      
+      // Abrir PDF en nueva ventana
+      window.open(pdf.output('bloburl'), '_blank');
+    });
+  });
+</script>
 
 {% endblock %}

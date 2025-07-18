@@ -38,7 +38,7 @@
   </div>
 </div>
 
-<table class="table table-bordered">
+<table class="table table-bordered" id="tbl-pedidos">
   <thead class="table-dark">
     <tr>
       <th scope="col">#</th>
@@ -74,5 +74,16 @@
     {% endfor %}
   </tbody>
 </table>
-
+<script>
+    let table = new DataTable('#tbl-pedidos', {
+    layout: {
+        topStart: {
+            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        }
+    },
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
+    },
+});
+</script>
 {% endblock %}
