@@ -6,4 +6,7 @@ urlpatterns = [
     path('registro/', views.registro, name='registro'),
     path('perfil/', views.perfil, name='perfil'),
     path('perfil/editar/', views.editar_perfil, name='editarperfil'),
+    path('recuperar-contrasena/', views.recuperar_contrasena, name='recuperar_contrasena'),
+    path('validar-codigo/<str:email>/', views.validar_codigo, name='validar_codigo'),
+    path('nueva-contrasena/<str:email>/<str:codigo>/', views.nueva_contrasena, name='nueva_contrasena'),
 ]

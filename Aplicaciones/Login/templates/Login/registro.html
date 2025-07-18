@@ -10,7 +10,13 @@
   <link rel="stylesheet" href="{% static 'css/registrar.css' %}">
   <link rel="shortcut icon" href="{% static 'plantilla/corona/template/assets/images/favicon.png' %}" />
   <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+
+  <!-- ✅ SweetAlert2 (Ventanas emergentes) -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- ✅ jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
 </head>
 <body>
   <div class="register-container">
@@ -20,19 +26,19 @@
         <h2>Crear cuenta</h2>
         <p>Regístrate para acceder al sistema de gestión</p>
       </div>
-      <form method="POST">
+      <form method="POST" id="formRegistro">
         {% csrf_token %}
         <div class="form-group">
-          <label for="usuario">Usuario</label>
-          <input type="text" id="usuario" name="username">
+          <label for="usuario"><p>Usuario</p></label>
+          <input type="text" id="usuario" name="username" class="form-control">
         </div>
         <div class="form-group">
           <label for="email">Correo electrónico</label>
-          <input type="email" id="email" name="email">
+          <input type="email" id="email" name="email" class="form-control">
         </div>
         <div class="form-group">
           <label for="clave">Contraseña</label>
-          <input type="password" id="clave" name="password">
+          <input type="password" id="clave" name="password" class="form-control">
         </div>
         <button type="submit" class="btn-register">Registrarme</button>
         <div class="login-link">
@@ -53,5 +59,57 @@
       </script>
     {% endfor %}
   {% endif %}
+
+  <script>
+    // Validar formulario
+    $("#formRegistro").validate({
+      rules: {
+        username: {
+          required: true,
+          minlength: 3,
+          maxlength: 50
+        },
+        email: {
+          required: true,
+          email: true
+        },
+        password: {
+          required: true,
+          minlength: 6,
+          maxlength: 50
+        }
+      },
+      messages: {
+        username: {
+          required: "Por favor ingrese un nombre de usuario",
+          minlength: "El nombre de usuario debe tener al menos 3 caracteres",
+          maxlength: "El nombre de usuario no puede exceder los 50 caracteres"
+        },
+        email: {
+          required: "Por favor ingrese un correo electrónico",
+          email: "Por favor ingrese un correo electrónico válido"
+        },
+        password: {
+          required: "Por favor ingrese la contraseña",
+          minlength: "La contraseña debe tener al menos 6 caracteres",
+          maxlength: "La contraseña no puede exceder los 50 caracteres"
+        }
+      }
+    });
+  </script>
+
+<style>
+  .error {
+    color: red;
+    font-family: 'Montserrat';
+    padding-top: 5px;
+    margin-top: 2px;
+    display: block;
+  }
+  .form-control.error {
+    border: 1px solid red;
+    margin-bottom: 5px;
+  }
+</style>
 </body>
 </html>

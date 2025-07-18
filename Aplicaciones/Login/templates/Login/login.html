@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/mdi/css/materialdesignicons.min.css' %}">
     <!-- ✅ SweetAlert2 (Ventanas emergentes) -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- ✅ jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+
 </head>
 <body>
   <div class="login-container">
@@ -19,20 +23,20 @@
         <h2>CarbonGest</h2>
         <p>Accede a tu cuenta para gestionar el sistema</p>
       </div>
-      <form method="POST">
+      <form method="POST" id="formLogin">
         {% csrf_token %}
         <div class="form-group">
           <label for="usuario">Usuario o correo</label>
-          <input type="text" name="username" id="usuario" required>
+          <input type="text" name="username" id="usuario" class="form-control">
         </div>
         <div class="form-group">
           <label for="clave">Contraseña</label>
-          <input type="password" name="password" id="clave" required>
+          <input type="password" name="password" id="clave" class="form-control">
         </div>
         <div class="form-options">
           <label>
           </label>
-          <a href="#">¿Olvidaste tu contraseña?</a>
+          <a href="{% url 'recuperar_contrasena' %}">¿Olvidaste tu contraseña?</a>
         </div>
         <button type="submit" class="btn-login">Entrar</button>
       </form>
@@ -58,5 +62,49 @@
       window.location.reload();
     }
 </script>
+
+<script>
+    // Validar formulario
+    $("#formLogin").validate({
+      rules: {
+        username: {
+          required: true,
+          minlength: 3,
+          maxlength: 50
+        },
+        password: {
+          required: true,
+          minlength: 6,
+          maxlength: 50
+        }
+      },
+      messages: {
+        username: {
+          required: "Por favor ingrese un usuario o correo",
+          minlength: "El usuario debe tener al menos 3 caracteres",
+          maxlength: "El usuario no puede exceder los 50 caracteres"
+        },
+        password: {
+          required: "Por favor ingrese la contraseña",
+          minlength: "La contraseña debe tener al menos 6 caracteres",
+          maxlength: "La contraseña no puede exceder los 50 caracteres"
+        }
+      }
+    });
+</script>
+
+<style>
+  .error {
+    color: red;
+    font-family: 'Montserrat';
+    padding-top: 5px;
+    margin-top: 2px;
+    display: block;
+  }
+  .form-control.error {
+    border: 1px solid red;
+    margin-bottom: 5px;
+  }
+</style>
 </body>
 </html>
