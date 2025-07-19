@@ -26,6 +26,17 @@
   }
 </script>
 
+<style>
+  /* Estilo para las imágenes en la tabla */
+  #tbl-productos img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover; /* Mantiene la proporción */
+    border-radius: 0 !important; /* Elimina bordes redondos */
+    border: 1px solid #dee2e6; /* Borde opcional */
+  }
+</style>
+
 <br>
 <h1 class="text-center text-white">Listado de Productos</h1>
 <hr>
@@ -47,6 +58,7 @@
       <th>Peso</th>
       <th>Presentación</th>
       <th>Precio</th>
+      <th>Foto</th>
       <th>Acciones</th>
     </tr>
   </thead>
@@ -59,6 +71,13 @@
       <td>{{ producto.peso }} kg</td>
       <td>{{ producto.presentacion }}</td>
       <td>$ {{ producto.precio }}</td>
+      <td>
+          {% if producto.foto %}
+            <img src="{{ producto.foto.url }}" alt="Foto del producto">
+          {% else %}
+            Ninguna Imagen
+          {% endif %}
+      </td>
       <td>
         <a href="{% url 'editarProducto' producto.id %}" class="btn btn-sm btn-outline-warning">
           <i class="fa fa-pen"></i>
@@ -75,6 +94,8 @@
     {% endfor %}
   </tbody>
 </table>
+
+
 <script>
     let table = new DataTable('#tbl-productos', {
     layout: {

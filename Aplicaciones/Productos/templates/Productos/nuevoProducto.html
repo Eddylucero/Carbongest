@@ -39,7 +39,7 @@
 </style>
 
 <div class="form-wrap">
-  <form action="{% url 'guardarProducto' %}" method="post" class="forms-sample form-box" id="formGuardarProducto">
+  <form action="{% url 'guardarProducto' %}" method="post" enctype="multipart/form-data" class="forms-sample form-box" id="formGuardarProducto">
     {% csrf_token %}
     <h3 class="text-center text-white mb-4">Agregar Nuevo Producto</h3>
 
@@ -74,6 +74,11 @@
     <div class="form-group">
       <label for="precio">Precio</label>
       <input type="number" step="0.01" class="form-control p-input" id="precio" name="precio" placeholder="Ej. 15.50" min="0.01">
+    </div>
+
+    <div class="form-group">
+      <label for="foto">Imagen del Producto</label>
+      <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
     </div>
 
     <div class="form-group">
@@ -191,56 +196,82 @@
     });
   });
 </script>
+
 <script>
-      // Validación del formulario
-    $("#formGuardarProducto").validate({
-      rules: {
-        nombre: {
-          required: true
-        },
-        tipo: {
-          required: true
-        },
-        presentacion: {
-          required: true
-        },
-        precio: {
-          required: true,
-          number: true,
-          min: 0.01
-        },
-        cantidad: {
-          required: true,
-          digits: true,
-          min: 1
-        }
+  // Validación del formulario
+  $("#formGuardarProducto").validate({
+    rules: {
+      nombre: {
+        required: true
       },
-      messages: {
-        nombre: {
-          required: "Seleccione un producto"
-        },
-        tipo: {
-          required: "Seleccione un tipo"
-        },
-        presentacion: {
-          required: "La presentación es requerida"
-        },
-        precio: {
-          required: "Ingrese el precio",
-          number: "Debe ser un número válido",
-          min: "El precio mínimo es 0.01"
-        },
-        cantidad: {
-          required: "Ingrese la cantidad",
-          digits: "Debe ser un número entero",
-          min: "La cantidad mínima es 1"
-        }
+      tipo: {
+        required: true
       },
-      errorElement: "span",
-      errorClass: "error",
-      errorPlacement: function(error, element) {
-        error.insertAfter(element);
+      presentacion: {
+        required: true
+      },
+      precio: {
+        required: true,
+        number: true,
+        min: 0.01
+      },
+      cantidad: {
+        required: true,
+        digits: true,
+        min: 1
+      },
+      foto: {
+        extension: "jpg|jpeg|png|gif",
+        required: true
       }
-    });
+    },
+    messages: {
+      nombre: {
+        required: "Seleccione un producto"
+      },
+      tipo: {
+        required: "Seleccione un tipo"
+      },
+      presentacion: {
+        required: "La presentación es requerida"
+      },
+      precio: {
+        required: "Ingrese el precio",
+        number: "Debe ser un número válido",
+        min: "El precio mínimo es 0.01"
+      },
+      cantidad: {
+        required: "Ingrese la cantidad",
+        digits: "Debe ser un número entero",
+        min: "La cantidad mínima es 1"
+      },
+      foto: {
+        extension: "Debe ser un archivo de imagen",
+        required: "Debe seleccionar una imagen"
+      },
+    },
+    errorElement: "span",
+    errorClass: "error",
+    errorPlacement: function(error, element) {
+      error.insertAfter(element);
+    }
+  });
+</script>
+
+<script>
+  $("#foto").fileinput({
+    language: "es",
+    allowedFileExtensions: ["jpg", "jpeg", "png"],
+    showUpload: false, 
+    dropZoneEnabled: true, 
+    maxFileSize: 2000, 
+    showPreview: true, 
+    browseLabel: "Seleccionar imagen",
+    removeLabel: "Eliminar",
+    initialCaption: "Arrastra y suelta la imagen aquí",
+    showRemove: true, 
+    showZoom: true, 
+    showDrag: true 
+  });
 </script>
 {% endblock %}

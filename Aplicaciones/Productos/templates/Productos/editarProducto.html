@@ -40,7 +40,7 @@
 </style>
 
 <div class="form-wrap">
-  <form action="{% url 'actualizarProducto' producto.id %}" method="post" class="forms-sample form-box" id="formEditarProducto">
+  <form action="{% url 'actualizarProducto' producto.id %}" method="post" class="forms-sample form-box" enctype="multipart/form-data" id="formEditarProducto">
     {% csrf_token %}
     <h3 class="text-center text-white mb-4">Editar Producto</h3>
 
@@ -86,6 +86,22 @@
     <div class="form-group">
       <label for="cantidad">Cantidad disponible</label>
       <input type="number" class="form-control p-input" id="cantidad" name="cantidad" value="{{ producto.cantidad }}">
+    </div>
+
+    <div class="mb-3">
+        <label for="foto">Imagen del Producto: 
+            <small class="text-muted">Si no seleccionas una nueva, se mantendrá la actual.</small>
+        </label>
+        <input class="form-control" type="file" name="foto" id="foto" accept="image/*">
+        
+        {% if producto.foto %}
+            <div class="mt-2">
+                <img src="{{ producto.foto.url }}" width="100px" height="auto" class="img-thumbnail" alt="Imagen del producto">
+                <small class="d-block text-muted mt-1">Imagen actual</small>
+            </div>
+        {% else %}
+            <div class="text-muted mt-2">No tiene imagen</div>
+        {% endif %}
     </div>
 
     <br><br>
@@ -168,6 +184,25 @@
           min: "La cantidad mínima es 1"
         }
       }
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $("#foto").fileinput({
+            language: "es",
+            allowedFileExtensions: ["jpg", "jpeg", "png"],
+            showUpload: false, 
+            dropZoneEnabled: true, 
+            maxFileSize: 2000, 
+            showPreview: true, 
+            browseLabel: "Seleccionar imagen",
+            removeLabel: "Eliminar",
+            initialCaption: "Arrastra y suelta la imagen aquí",
+            showRemove: true, 
+            showZoom: true, 
+            showDrag: true 
+        });
     });
 </script>
 {% endblock %}

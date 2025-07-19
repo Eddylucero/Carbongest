@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body>
   <div class="register-container">
@@ -28,7 +29,10 @@
         </div>
         <button type="submit" class="btn-register">Validar Código</button>
         <div class="login-link">
-          <a href="{% url 'recuperar_contrasena' %}">Reenviar código</a>
+          <a href="{% url 'recuperar_contrasena' %}"><i class="fa fa-sync-alt"></i> Reenviar código</a>
+        </div>
+        <div class="login-link">
+          <a href="{% url 'login' %}"><i class="fa fa-arrow-left"></i> Volver al inicio de sesión</a>
         </div>
       </form>
     </div>

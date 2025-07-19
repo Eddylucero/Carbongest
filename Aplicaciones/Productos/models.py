@@ -13,7 +13,9 @@ class Producto(models.Model):
     peso = models.DecimalField(max_digits=6, decimal_places=2)
     presentacion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=8, decimal_places=2)
-    cantidad = models.IntegerField(default=0)  # <- Aquí controlas el stock acumulado
+    cantidad = models.IntegerField(default=0)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    foto = models.FileField(upload_to='productos', blank=True, null=True)
 
     def __str__(self):
         return f"{self.get_nombre_display()} ({self.presentacion})"

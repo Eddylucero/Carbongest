@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Producto
-
+import os
+from django.conf import settings
 
 def listarProductos(request):
     productos = Producto.objects.all()
@@ -21,6 +22,7 @@ def guardarProducto(request):
             peso = request.POST.get('peso', '0')
             precio = request.POST.get('precio', '0')
             cantidad = request.POST.get('cantidad', '0')
+            foto = request.FILES.get('foto')  # Obtenemos la imagen
 
             if not all([nombre, tipo, presentacion, peso, precio, cantidad]):
                 return redirect('nuevoProducto')
@@ -43,6 +45,12 @@ def guardarProducto(request):
             if producto_existente:
                 producto_existente.cantidad += cantidad
                 producto_existente.precio = precio
+                if foto:  # Si se sube nueva foto, actualizarla
+                    if producto_existente.foto:
+                        # Eliminar la foto anterior
+                        if os.path.isfile(producto_existente.foto.path):
+                            os.remove(producto_existente.foto.path)
+                    producto_existente.foto = foto
                 producto_existente.save()
                 messages.success(request, f"Se agregaron {cantidad} unidades al producto existente")
             else:
@@ -52,13 +60,15 @@ def guardarProducto(request):
                     presentacion=presentacion,
                     peso=peso,
                     precio=precio,
-                    cantidad=cantidad
+                    cantidad=cantidad,
+                    foto=foto  # Guardar la imagen
                 )
                 messages.success(request, "Producto creado exitosamente")
 
             return redirect('listarProductos')
 
         except Exception as e:
+            messages.error(request, f"Error al guardar: {str(e)}")
             return redirect('nuevoProducto')
 
     return redirect('listarProductos')
@@ -66,6 +76,7 @@ def guardarProducto(request):
 
 def eliminarProducto(request, id):
     producto = get_object_or_404(Producto, id=id)
+    # La eliminación de la imagen se maneja en el método delete() del modelo
     producto.delete()
     messages.success(request, "Producto eliminado correctamente")
     return redirect('listarProductos')
@@ -82,9 +93,10 @@ def actualizarProducto(request, id):
 
     if request.method == "POST":
         try:
-            producto.nombre = request.POST.get('nombre')
+            #producto.nombre = request.POST.get('nombre')
+
             producto.tipo = request.POST.get('tipo')
-            
+
             producto.presentacion = request.POST.get('presentacion')
 
             peso_str = request.POST.get('peso', '0').replace(',', '.')
@@ -95,6 +107,15 @@ def actualizarProducto(request, id):
             
             cantidad_str = request.POST.get('cantidad', '0')
             producto.cantidad = int(cantidad_str) if cantidad_str else 0
+
+            # Manejo de la nueva imagen
+            if 'foto' in request.FILES:
+                nueva_foto = request.FILES['foto']
+                # Eliminar la foto anterior si existe
+                if producto.foto:
+                    if os.path.isfile(producto.foto.path):
+                        os.remove(producto.foto.path)
+                producto.foto = nueva_foto
 
             producto.save()
             messages.success(request, "Producto actualizado correctamente")
