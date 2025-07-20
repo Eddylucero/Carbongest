@@ -220,9 +220,11 @@
                   <button class="btn btn-sm btn-outline-warning" onclick="editarProveedor(${prov.id})" title="Editar">
                     <i class="fa fa-pencil-alt"></i>
                   </button>
-                  <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${prov.id})" title="Eliminar">
-                    <i class="fa fa-trash"></i>
-                  </button>
+                  {% if perms.proveedores.delete_proveedor %}
+                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete(${prov.id})" title="Eliminar">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  {% endif %}
                   <button class="btn btn-sm btn-outline-info" onclick="abrirTelegramPedidoModal(${prov.id}, '${prov.nombre}')" title="Enviar Pedido por Telegram">
                     <i class="fab fa-telegram-plane"></i>
                   </button>

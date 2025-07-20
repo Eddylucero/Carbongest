@@ -2,7 +2,8 @@ import json
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.conf import settings # Para acceder a TELEGRAM_BOT_TOKEN
+from django.conf import settings
+from django.contrib.auth.decorators import permission_required
 
 from .models import Proveedor
 
@@ -83,6 +84,7 @@ def editar_proveedor(request, id):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+@permission_required('proveedores.delete_proveedor', raise_exception=True)
 def eliminar_proveedor(request, id):
     if request.method == 'POST':
         try:

@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Pedido, DetallePedido
+from collections import defaultdict
 from Aplicaciones.Clientes.models import Cliente
 from Aplicaciones.Productos.models import Producto
 from Aplicaciones.Inventario.models import Inventario
+from django.http import JsonResponse
+from django.db.models import Sum, Count
 
 # Listar pedidos
 def listarPedidos(request):
@@ -129,3 +132,66 @@ def ventasPedido(request, id):
         'pedido': pedido,
         'detalles': detalles
     })
+
+def graficosPedidos(request):
+    return render(request, 'Pedidos/graficos.html')
+
+def datosGraficosPedidos(request):
+    # Productos vendidos
+    productos_raw = DetallePedido.objects.values('producto__nombre') \
+        .annotate(total=Sum('cantidad')) \
+        .order_by('-total')
+    productos = {
+        'labels': [p['producto__nombre'] for p in productos_raw],
+        'data': [int(p['total']) for p in productos_raw]
+    }
+
+    # Estado de pedidos
+    estado = {
+        'entregado': Pedido.objects.filter(estado='entregado').count(),
+        'cancelado': Pedido.objects.filter(estado='cancelado').count(),
+        'pendiente': Pedido.objects.exclude(estado__in=['entregado', 'cancelado']).count()
+    }
+
+    # Pedidos por mes
+    meses = defaultdict(int)
+    pedidos = Pedido.objects.values('fecha_pedido')
+    for p in pedidos:
+        fecha = p['fecha_pedido']
+        if fecha:
+            mes = fecha.strftime('%B %Y')  # Ejemplo: "July 2025"
+            meses[mes] += 1
+
+    mensual = {
+        'labels': list(meses.keys()),
+        'data': list(meses.values())
+    }
+
+    return JsonResponse({
+        'productos': productos,
+        'estado': estado,
+        'mensual': mensual
+    })
+
+def calendarioPedidos(request):
+    return render(request, 'Pedidos/calendario.html')
+
+def eventosPedidos(request):
+    pedidos = Pedido.objects.select_related('cliente').all()
+    eventos = []
+
+    for pedido in pedidos:
+        color = '#f1c40f'  # pendiente por defecto
+        if pedido.estado == "entregado":
+            color = '#2ecc71'
+        elif pedido.estado == "cancelado":
+            color = '#e74c3c'
+
+        eventos.append({
+            'title': f"{pedido.cliente.nombre} ({pedido.estado})",
+            'start': pedido.fecha_pedido.strftime('%Y-%m-%d'),
+            'color': color
+        })
+
+
+    return JsonResponse(eventos, safe=False)

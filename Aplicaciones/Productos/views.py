@@ -3,6 +3,7 @@ from django.contrib import messages
 from .models import Producto
 import os
 from django.conf import settings
+from django.contrib.auth.decorators import permission_required
 
 def listarProductos(request):
     productos = Producto.objects.all()
@@ -73,7 +74,7 @@ def guardarProducto(request):
 
     return redirect('listarProductos')
 
-
+@permission_required('productos.delete_producto', raise_exception=True)
 def eliminarProducto(request, id):
     producto = get_object_or_404(Producto, id=id)
     # La eliminación de la imagen se maneja en el método delete() del modelo

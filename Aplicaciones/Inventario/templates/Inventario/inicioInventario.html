@@ -2,63 +2,80 @@
 {% load static %}
 {% block contenido %}
 
+<style>
+  @media (max-width: 576px) {
+    .table th,
+    .table td {
+      font-size: 0.85rem;
+      padding: 6px;
+      vertical-align: middle;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
 <br>
 <h1 class="text-center text-white">Inventario Actual</h1>
 <hr>
 
-<table class="table table-bordered" id="tbl-inventario">
-  <thead class="table-dark text-center">
-    <tr>
-      <th>#</th>
-      <th>Producto</th>
-      <th>Cantidad</th>
-      <th>Total Pedidos</th>
-      <th>Total Ventas</th>
-      <th>Última Actualización</th>
-      <th>Estado</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in datos %}
-    <tr class="text-center
-      {% if item.cantidad_disponible <= item.producto.stock_minimo %}
-        table-danger
-      {% elif item.producto.stock_maximo and item.cantidad_disponible > item.producto.stock_maximo %}
-        table-warning
-      {% endif %}">
-      <td>{{ forloop.counter }}</td>
-      <td>{{ item.nombre }}</td>
-      <td><span class="badge border border-primary text-primary bg-transparent">{{ item.cantidad }}</span></td>
-      <td><span class="badge border border-warning text-warning bg-transparent">{{ item.total_pedidos }}</span></td>
-      <td><span class="badge border border-success text-success bg-transparent">{{ item.total_ventas }}</span></td>
-      <td>{{ item.ultima_actualizacion|date:"d/m/Y H:i" }}</td>
-      <td>
-        {% if item.cantidad <= 5 %}
-          <span class="badge border border-danger text-danger bg-transparent">Bajo</span>
-        {% else %}
-          <span class="badge border border-success text-success bg-transparent">Óptimo</span>
-        {% endif %}
-      </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="7" class="text-center text-muted">No hay productos registrados en inventario.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="table-responsive px-3">
+  <table class="table table-bordered table-striped table-hover align-middle" id="tbl-inventario">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>#</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Total Pedidos</th>
+        <th>Total Ventas</th>
+        <th>Última Actualización</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in datos %}
+      <tr class="text-center
+        {% if item.cantidad_disponible <= item.producto.stock_minimo %}
+          table-danger
+        {% elif item.producto.stock_maximo and item.cantidad_disponible > item.producto.stock_maximo %}
+          table-warning
+        {% endif %}">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ item.nombre }}</td>
+        <td><span class="badge border border-primary text-primary bg-transparent">{{ item.cantidad }}</span></td>
+        <td><span class="badge border border-warning text-warning bg-transparent">{{ item.total_pedidos }}</span></td>
+        <td><span class="badge border border-success text-success bg-transparent">{{ item.total_ventas }}</span></td>
+        <td>{{ item.ultima_actualizacion|date:"d/m/Y H:i" }}</td>
+        <td>
+          {% if item.cantidad <= 5 %}
+            <span class="badge border border-danger text-danger bg-transparent">Bajo</span>
+          {% else %}
+            <span class="badge border border-success text-success bg-transparent">Óptimo</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center text-muted">No hay productos registrados en inventario.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 <script>
-    let table = new DataTable('#tbl-inventario', {
+  let table = new DataTable('#tbl-inventario', {
+    responsive: true,
     layout: {
-        topStart: {
-            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        }
+      topStart: {
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+      }
     },
     language: {
-        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
+      url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
     },
-});
+  });
 </script>
 
 {% endblock %}

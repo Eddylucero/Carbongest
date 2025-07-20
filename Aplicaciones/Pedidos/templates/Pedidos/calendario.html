@@ -1,0 +1,44 @@
+{% extends "plantilla.html" %}
+{% load static %}
+{% block contenido %}
+
+<div class="container py-4 text-white">
+  <h3 class="text-white text-center mb-4">🗓️ Calendario de Pedidos</h3>
+  <div id='calendar'></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    locale: 'es',
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,listWeek'
+    },
+    events: "{% url 'eventosPedidos' %}",
+    buttonText: {
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana',
+      day: 'Día',
+      list: 'Lista'
+    }
+  });
+  calendar.render();
+});
+</script>
+
+<style>
+  #calendar {
+    padding: 20px;
+    border-radius: 10px;
+  }
+  #calendar .fc-toolbar button {
+    color: initial !important;
+  }
+</style>
+
+{% endblock %}

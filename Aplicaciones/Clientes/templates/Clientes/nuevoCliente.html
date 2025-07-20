@@ -30,6 +30,22 @@
     color: #eee;
   }
 </style>
+<script>
+  $(document).ready(function () {
+    const ciudades = [
+      "Pujilí", "Latacunga", "Salcedo", "Saquisilí",
+      "Ambato", "Riobamba", "Quito", "Guayaquil", "Cuenca", "Loja"
+    ];
+    const provincias = [
+      "Cotopaxi", "Tungurahua", "Chimborazo", "Pichincha",
+      "Guayas", "Azuay", "Manabí", "El Oro", "Loja", "Imbabura"
+    ];
+
+    $("#ciudad").autocomplete({ source: ciudades });
+    $("#provincia").autocomplete({ source: provincias });
+  });
+</script>
+
 
 <div class="form-wrap">
   <form action="{% url 'guardarCliente' %}" method="post" class="forms-sample form-box" id="formGuardarCliente">
@@ -196,5 +212,6 @@
     }
   });
 </script>
+
 
 {% endblock %}

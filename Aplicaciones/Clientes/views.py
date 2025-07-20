@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Cliente
+from django.contrib.auth.decorators import permission_required
 
 # Listar clientes
 def listarClientes(request):
@@ -8,6 +9,7 @@ def listarClientes(request):
     for cliente in clientes:
         print(f"Cliente: {cliente.nombre}, Tipo: {cliente.tipo_cliente}")
     return render(request, "Clientes/inicioClientes.html", {'clientes': clientes})
+
 
 # Mostrar formulario para nuevo cliente
 def nuevoCliente(request):
@@ -50,7 +52,7 @@ def guardarCliente(request):
 
     return redirect('listarClientes')
 
-# Eliminar cliente
+@permission_required('clientes.delete_cliente', raise_exception=True)
 def eliminarCliente(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     cliente.delete()

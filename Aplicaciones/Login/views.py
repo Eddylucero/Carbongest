@@ -4,11 +4,11 @@ from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 
-# Diccionario temporal para almacenar códigos (en producción usa cache o base de datos)
+# Diccionario temporal para almacenar códigos de verificación
 codigos_temporales = {}
 
 def vista_login(request):
@@ -40,6 +40,7 @@ def registro(request):
         email = request.POST.get('email', '').strip()
         password = request.POST.get('password', '')
 
+        # Validaciones básicas
         if not username or not email or not password:
             messages.warning(request, 'Todos los campos son obligatorios.')
         elif User.objects.filter(username=username).exists():
@@ -47,7 +48,20 @@ def registro(request):
         elif User.objects.filter(email=email).exists():
             messages.error(request, 'El correo electrónico ya está registrado.')
         else:
-            User.objects.create_user(username=username, email=email, password=password)
+            # Crear el usuario
+            nuevo_usuario = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
+
+            # Asignar al grupo "Secretario"
+            try:
+                grupo_secretario = Group.objects.get(name='Secretario')
+                nuevo_usuario.groups.add(grupo_secretario)
+            except Group.DoesNotExist:
+                messages.warning(request, "El grupo 'Secretario' no está creado aún. Puedes configurarlo desde el admin.")
+
             messages.success(request, 'Registro exitoso. Ahora puedes iniciar sesión.')
             return redirect('login')
 

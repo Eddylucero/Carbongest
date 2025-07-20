@@ -26,11 +26,31 @@
   }
 </script>
 
+<style>
+  @media (max-width: 576px) {
+    #tbl-pedidos th,
+    #tbl-pedidos td {
+      font-size: 0.85rem;
+      padding: 6px;
+      vertical-align: middle;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .btn {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+    }
+  }
+</style>
+
 <br>
 <h1 class="text-center">Listado de Pedidos</h1>
 <hr>
 
-<div class="row mb-3 justify-content-end">
+<div class="row mb-3 justify-content-end px-3">
   <div class="col-auto">
     <a href="nuevoPedido" class="btn btn-outline-success">
       Agregar Pedido
@@ -38,52 +58,57 @@
   </div>
 </div>
 
-<table class="table table-bordered" id="tbl-pedidos">
-  <thead class="table-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Cliente</th>
-      <th scope="col">Fecha</th>
-      <th scope="col">Estado</th>
-      <th scope="col">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for pedido in pedidos %}
-    <tr>
-      <th scope="row">{{ forloop.counter }}</th>
-      <td>{{ pedido.cliente.nombre }}</td>
-      <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
-      <td>{{ pedido.estado|capfirst }}</td>
-      <td>
-        <a href="{% url 'detallePedido' pedido.id %}" class="btn btn-sm btn-outline-info" title="Ver detalle">
-          <i class="fa fa-eye"></i>
-        </a>
+<!-- Tabla envuelta para responsividad -->
+<div class="table-responsive px-3">
+  <table class="table table-bordered table-striped table-hover align-middle" id="tbl-pedidos">
+    <thead class="table-dark text-center">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pedido in pedidos %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ pedido.cliente.nombre }}</td>
+        <td>{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</td>
+        <td>{{ pedido.estado|capfirst }}</td>
+        <td class="text-center">
+          <a href="{% url 'detallePedido' pedido.id %}" class="btn btn-sm btn-outline-info" title="Ver detalle">
+            <i class="fa fa-eye"></i>
+          </a>
+          {% if pedido.estado == "pendiente" %}
+          <a href="{% url 'ventasPedido' pedido.id %}" class="btn btn-sm btn-outline-warning" title="Procesar venta o cancelar">
+            <i class="mdi mdi-cash-register"></i>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-muted">No hay pedidos registrados.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
-        {% if pedido.estado == "pendiente" %}
-        <a href="{% url 'ventasPedido' pedido.id %}" class="btn btn-sm btn-outline-warning" title="Procesar venta o cancelar">
-          <i class="mdi mdi-cash-register"></i>
-        </a>
-        {% endif %}
-      </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="5" class="text-center text-muted">No hay pedidos registrados.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
 <script>
-    let table = new DataTable('#tbl-pedidos', {
+  let table = new DataTable('#tbl-pedidos', {
+    responsive: true,
     layout: {
-        topStart: {
-            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        }
+      topStart: {
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+      }
     },
     language: {
-        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
+      url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
     },
-});
+  });
 </script>
+
 {% endblock %}

@@ -1,0 +1,35 @@
+{% extends "plantilla.html" %}
+{% block contenido %}
+
+<h2 class="text-white">Productos con más ingreso</h2>
+<canvas id="graficoProductos" width="500" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    fetch("/Ventas/ingresoProductos/")
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById("graficoProductos").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: "Ingresos por Producto ($)",
+                    data: data.data,
+                    backgroundColor: "rgba(75, 192, 192, 0.5)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

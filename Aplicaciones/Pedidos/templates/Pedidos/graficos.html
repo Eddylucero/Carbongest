@@ -1,0 +1,136 @@
+{% extends "plantilla.html" %}
+{% block contenido %}
+
+<div class="container py-5">
+  <h1 class="text-white text-center mb-5">Panel de Control de Pedidos</h1>
+
+  <!-- Productos vendidos -->
+  <div class="mb-5 p-4 bg-dark rounded shadow">
+    <h2 class="text-white text-center mb-4">Productos más vendidos</h2>
+    <canvas id="graficoProductos" height="300"></canvas>
+  </div>
+
+  <!-- Estado de pedidos -->
+  <div class="mb-5 p-4 bg-dark rounded shadow">
+    <h2 class="text-white text-center mb-4">Estado de pedidos</h2>
+    <canvas id="graficoEstados" height="300"></canvas>
+  </div>
+
+  <!-- Evolución mensual -->
+  <div class="mb-5 p-4 bg-dark rounded shadow">
+    <h2 class="text-white text-center mb-4">Evolución mensual de pedidos</h2>
+    <canvas id="graficoMensual" height="250"></canvas>
+  </div>
+</div>
+
+
+<script>
+  fetch("{% url 'datosGraficosPedidos' %}")
+    .then(response => response.json())
+    .then(data => {
+      // Productos vendidos
+      new Chart(document.getElementById('graficoProductos'), {
+        type: 'bar',
+        data: {
+          labels: data.productos.labels,
+          datasets: [{
+            label: 'Cantidad Vendida',
+            data: data.productos.data,
+            backgroundColor: '#1abc9c',
+            borderColor: '#16a085',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: false
+            }
+          },
+          animation: {
+            duration: 1000,
+            easing: 'easeOutQuart'
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+
+      // Estado de pedidos
+      new Chart(document.getElementById('graficoEstados'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Entregados', 'Cancelados', 'Pendientes'],
+          datasets: [{
+            label: 'Estado',
+            data: [data.estado.entregado, data.estado.cancelado, data.estado.pendiente],
+            backgroundColor: ['#2ecc71', '#e74c3c', '#f1c40f'],
+            borderColor: '#ecf0f1',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#fff',
+                font: {
+                  size: 14
+                }
+              }
+            }
+          },
+          animation: {
+            animateScale: true
+          }
+        }
+      });
+
+      // Evolución mensual
+      new Chart(document.getElementById('graficoMensual'), {
+        type: 'line',
+        data: {
+          labels: data.mensual.labels,
+          datasets: [{
+            label: 'Pedidos por mes',
+            data: data.mensual.data,
+            borderColor: '#3498db',
+            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#3498db',
+            pointBorderColor: '#fff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#fff'
+              }
+            }
+          },
+          animation: {
+            duration: 1200
+          },
+          scales: {
+            x: {
+              ticks: { color: '#fff' }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#fff' }
+            }
+          }
+        }
+      });
+    });
+</script>
+
+{% endblock %}

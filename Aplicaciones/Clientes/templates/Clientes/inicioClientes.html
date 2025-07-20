@@ -2,11 +2,13 @@
 {% load static %}
 {% block contenido %}
 
+<!-- SweetAlert para confirmación de eliminación -->
 <script>
   function confirmDelete(id) {
     Swal.fire({
+      title: "CONFIRMACIÓN",
       text: "¿Está seguro de eliminar este cliente?",
-      icon: "warning",
+      icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
@@ -30,63 +32,87 @@
 <h1 class="text-center">Listado de Clientes</h1>
 <hr>
 
-<div class="row mb-3 justify-content-end">
+<div class="row mb-3 justify-content-end px-3">
   <div class="col-auto">
     <a href="nuevoCliente" class="btn btn-outline-success">
-      Agregar Cliente
+      <i class="fa fa-plus me-1"></i> Agregar Cliente
     </a>
   </div>
 </div>
 
+<!-- Tabla responsiva -->
+<div class="table-responsive px-3">
+  <table class="table table-bordered table-striped table-hover align-middle" id="tbl-clientes">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Cédula/RUC</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th>Tipo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ cliente.nombre }}</td>
+        <td>{{ cliente.cedula_o_ruc }}</td>
+        <td>{{ cliente.telefono }}</td>
+        <td>{{ cliente.email }}</td>
+        <td>{{ cliente.get_tipo_cliente_display|default:"No especificado" }}</td>
+        <td class="text-center">
+          <a href="{% url 'editarCliente' cliente.id %}" class="btn btn-sm btn-outline-warning" title="Editar">
+            <i class="fa fa-pen"></i>
+          </a>
+          {% if perms.clientes.delete_cliente %}
+          <a href="#" onclick="confirmDelete('{{ cliente.id }}')" class="btn btn-sm btn-outline-danger" title="Eliminar">
+            <i class="fa fa-trash"></i>
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center text-muted">No hay clientes registrados.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
-<table class="table table-bordered" id ="tbl-clientes">
-  <thead class="table-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Cédula/RUC</th>
-      <th scope="col">Teléfono</th>
-      <th scope="col">Email</th>
-      <th scope="col">Tipo</th>
-      <th scope="col">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for cliente in clientes %}
-    <tr>
-      <th scope="row">{{ forloop.counter }}</th>
-      <td>{{ cliente.nombre }}</td>
-      <td>{{ cliente.cedula_o_ruc }}</td>
-      <td>{{ cliente.telefono }}</td>
-      <td>{{ cliente.email }}</td>
-      <td>{{ cliente.get_tipo_cliente_display|default:"No especificado" }}</td>
-      <td>
-        <a href="{% url 'editarCliente' cliente.id %}" class="btn btn-sm btn-outline-warning">
-          <i class="fa fa-pen"></i>
-        </a>
-        <a href="#" onclick="confirmDelete('{{ cliente.id }}')" class="btn btn-sm btn-outline-danger">
-          <i class="fa fa-trash"></i>
-        </a>
-      </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="7" class="text-center text-muted">No hay clientes registrados.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
 
 <script>
-    let table = new DataTable('#tbl-clientes', {
+  let table = new DataTable('#tbl-clientes', {
+    responsive: true,
     layout: {
-        topStart: {
-            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        }
+      topStart: {
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+      }
     },
     language: {
-        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
+      url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
     },
-});
+  });
 </script>
+
+<!-- Ajuste visual adicional para móvil -->
+<style>
+  @media (max-width: 576px) {
+    .table th, .table td {
+      font-size: 0.85rem;
+      padding: 6px;
+    }
+    .btn {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
 {% endblock %}

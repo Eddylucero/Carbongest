@@ -2,19 +2,17 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>CarbonGest</title>
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.21.0/dist/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/localization/messages_es.min.js"></script>
 
-    <!-- DataTables CSS y JS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
 
-    <!-- Librerías para exportación -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
@@ -22,40 +20,36 @@
     <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.print.min.js"></script>
 
-      <!-- CSS para los botones -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.min.css">
+      <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.min.css">
     
-    <!-- Librerías para exportación de PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-    <!-- plugins:css -->
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/mdi/css/materialdesignicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/css/vendor.bundle.base.css' %}">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/jvectormap/jquery-jvectormap.css' %}">
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/owl-carousel-2/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/vendors/owl-carousel-2/owl.theme.default.min.css' %}">
-    <!-- End plugin css for this page -->
-
-    <!-- Layout styles -->
     <link rel="stylesheet" href="{% static 'plantilla/corona/template/assets/css/style.css' %}">
 
-    <!-- End layout styles -->
     <link rel="shortcut icon" href="{% static 'plantilla/corona/template/assets/images/favicon.png' %}" />
-    <!-- SweetAlert2 (Ventanas emergentes) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
-    <!-- Bootstrap FileInput -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/css/fileinput.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/js/fileinput.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/js/locales/es.min.js"></script>
 
-    <!-- Bootstrap JS (necesario para modales) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+    
+
 
   </head>
   <body>
@@ -63,6 +57,7 @@
       function confirmLogout() {
         Swal.fire({
           html: `<div style="font-size: 1rem; color: #333;">¿Deseas cerrar sesión?</div>`,
+
           icon: "question",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
@@ -83,7 +78,6 @@
       }
     </script>
     <div class="container-scroller">
-      <!-- partial:partials/_sidebar.html -->
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
           <a class="sidebar-brand brand-logo" href="/Clientes/"><img src="{% static 'plantilla/corona/template/assets/images/logo.svg' %}" alt="logo" /></a>
@@ -151,18 +145,23 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="#">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
-                <i class="mdi mdi-cash-multiple text-success"></i>
+                <i class="mdi mdi-laptop"></i>
               </span>
-              <span class="menu-title">Contabilidad</span>
+              <span class="menu-title">Otros</span>
+              <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% url 'graficosPedidos' %}">Graficos</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'calendarioPedidos' %}">Calendario</a></li>
+              </ul>
+            </div>
           </li>
         </ul>
       </nav>
-      <!-- partial -->
       <div class="container-fluid page-body-wrapper">
-        <!-- partial:partials/_navbar.html -->
         <nav class="navbar p-0 fixed-top d-flex flex-row">
           <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
             <a class="navbar-brand brand-logo-mini" href="#"><img src="{% static 'plantilla/corona/template/assets/images/logo-mini.svg' %}" alt="logo" /></a>
@@ -179,52 +178,6 @@
               </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
-              <li class="nav-item nav-settings d-none d-lg-block">
-                <a class="nav-link" href="#">
-                  <i class="mdi mdi-view-grid"></i>
-                </a>
-              </li>
-              <li class="nav-item dropdown border-left">
-                <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
-                  <i class="mdi mdi-email"></i>
-                  <span class="count bg-success"></span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-                  <h6 class="p-3 mb-0">Mensajes</h6>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <img src="{% static 'plantilla/corona/template/assets/images/faces/face4.jpg' %}" alt="image" class="rounded-circle profile-pic">
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">Mark send you a message</p>
-                      <p class="text-muted mb-0"> 1 Minutes ago </p>
-                    </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <img src="{% static 'plantilla/corona/template/assets/images/faces/face2.jpg' %}" alt="image" class="rounded-circle profile-pic">
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">Cregh send you a message</p>
-                      <p class="text-muted mb-0"> 15 Minutes ago </p>
-                    </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
-                    <div class="preview-thumbnail">
-                      <img src="{% static 'plantilla/corona/template/assets/images/faces/face3.jpg' %}" alt="image" class="rounded-circle profile-pic">
-                    </div>
-                    <div class="preview-item-content">
-                      <p class="preview-subject ellipsis mb-1">Profile picture updated</p>
-                      <p class="text-muted mb-0"> 18 Minutes ago </p>
-                    </div>
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <p class="p-3 mb-0 text-center">4 new messages</p>
-                </div>
-              </li>
               <li class="nav-item dropdown border-left">
                 <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
                   <i class="mdi mdi-bell"></i>
@@ -286,7 +239,7 @@
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
-                  <p class="p-3 mb-0 text-center">Advanced settings</p>
+                  <p class="p-3 mb-0 text-center">Configuración</p>
                 </div>
               </li>
             </ul>
@@ -295,7 +248,6 @@
             </button>
           </div>
         </nav>
-        <!-- partial -->
         <div class="main-panel">
           <div class="content-wrapper">
             {% block contenido %}
@@ -317,27 +269,19 @@
       </div>
     </div>
     <script src="{% static 'plantilla/corona/template/assets/vendors/js/vendor.bundle.base.js' %}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
     <script src="{% static 'plantilla/corona/template/assets/vendors/chart.js/Chart.min.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/vendors/progressbar.js/progressbar.min.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/vendors/jvectormap/jquery-jvectormap.min.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/vendors/owl-carousel-2/owl.carousel.min.js' %}"></script>
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
     <script src="{% static 'plantilla/corona/template/assets/js/off-canvas.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/js/hoverable-collapse.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/js/misc.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/js/settings.js' %}"></script>
     <script src="{% static 'plantilla/corona/template/assets/js/todolist.js' %}"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page -->
     <script src="{% static 'plantilla/corona/template/assets/js/dashboard.js' %}"></script>
 
-    <!-- End custom js for this page -->
-
-  <style>
+    <style>
     .custom-swal-popup {
       padding: 1.5em 2em;
     }
@@ -379,8 +323,13 @@
         <script>
           Swal.fire({
           title: `{% if message.tags == 'success' %}Éxito{% elif message.tags == 'error' %}Error{% elif message.tags == 'warning' %}Advertencia{% else %}Mensaje{% endif %}`,
-          text: "{{ message|escapejs }}",
-          icon: "{{ message.tags|default:'info' }}"
+          html: `<div class="custom-swal-html">{{ message|escapejs }}</div>`, 
+          icon: "{{ message.tags|default:'info' }}",
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            icon: 'custom-swal-icon',
+          }
         });
         </script>
       {% endfor %}
@@ -402,4 +351,3 @@
   {% endif %}
   </body>
 </html>
-        

@@ -31,9 +31,27 @@
   #tbl-productos img {
     width: 80px;
     height: 80px;
-    object-fit: cover; /* Mantiene la proporción */
-    border-radius: 0 !important; /* Elimina bordes redondos */
-    border: 1px solid #dee2e6; /* Borde opcional */
+    object-fit: cover;
+    border-radius: 0 !important;
+    border: 1px solid #dee2e6;
+  }
+
+  @media (max-width: 576px) {
+    #tbl-productos th,
+    #tbl-productos td {
+      font-size: 0.85rem;
+      padding: 6px;
+      vertical-align: middle;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .btn {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+    }
   }
 </style>
 
@@ -41,7 +59,7 @@
 <h1 class="text-center text-white">Listado de Productos</h1>
 <hr>
 
-<div class="row mb-3 justify-content-end">
+<div class="row mb-3 justify-content-end px-3">
   <div class="col-auto">
     <a href="nuevoProducto" class="btn btn-outline-success">
       Agregar Producto
@@ -49,63 +67,69 @@
   </div>
 </div>
 
-<table class="table table-bordered" id="tbl-productos">
-  <thead class="table-dark">
-    <tr>
-      <th>#</th>
-      <th>Nombre</th>
-      <th>Tipo</th>
-      <th>Peso</th>
-      <th>Precio</th>
-      <th>Fecha Creación</th>
-      <th>Foto</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for producto in productos %}
-    <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ producto.get_nombre_display }}</td>
-      <td>{{ producto.tipo }}</td>
-      <td>{{ producto.peso }} kg</td>
-      <td>$ {{ producto.precio }}</td>
-      <td>{{ producto.fecha_creacion|date:"d/m/Y H:i" }}</td>
-      <td>
-          {% if producto.foto %}
-            <img src="{{ producto.foto.url }}" alt="Foto del producto">
-          {% else %}
-            Ninguna Imagen
+<!-- Envoltorio para responsividad -->
+<div class="table-responsive px-3">
+  <table class="table table-bordered table-striped table-hover align-middle" id="tbl-productos">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Peso</th>
+        <th>Precio</th>
+        <th>Fecha Creación</th>
+        <th>Foto</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for producto in productos %}
+      <tr class="text-center">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ producto.get_nombre_display }}</td>
+        <td>{{ producto.tipo }}</td>
+        <td>{{ producto.peso }} kg</td>
+        <td>$ {{ producto.precio }}</td>
+        <td>{{ producto.fecha_creacion|date:"d/m/Y H:i" }}</td>
+        <td>
+            {% if producto.foto %}
+              <img src="{{ producto.foto.url }}" alt="Foto del producto">
+            {% else %}
+              Ninguna Imagen
+            {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'editarProducto' producto.id %}" class="btn btn-sm btn-outline-warning">
+            <i class="fa fa-pen"></i>
+          </a>
+          {% if perms.productos.delete_producto %}
+            <a href="#" onclick="confirmDelete('{{ producto.id }}')" class="btn btn-sm btn-outline-danger">
+              <i class="fa fa-trash"></i>
+            </a>
           {% endif %}
-      </td>
-      <td>
-        <a href="{% url 'editarProducto' producto.id %}" class="btn btn-sm btn-outline-warning">
-          <i class="fa fa-pen"></i>
-        </a>
-        <a href="#" onclick="confirmDelete('{{ producto.id }}')" class="btn btn-sm btn-outline-danger">
-          <i class="fa fa-trash"></i>
-        </a>
-      </td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="7" class="text-center text-muted">No hay productos registrados.</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="text-center text-muted">No hay productos registrados.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 <script>
-    let table = new DataTable('#tbl-productos', {
+  let table = new DataTable('#tbl-productos', {
+    responsive: true,
     layout: {
-        topStart: {
-            buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        }
+      topStart: {
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+      }
     },
     language: {
-        url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
+      url: 'https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-ES.json',
     },
-});
+  });
 </script>
+
 {% endblock %}
