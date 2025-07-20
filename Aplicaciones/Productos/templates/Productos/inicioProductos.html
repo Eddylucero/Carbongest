@@ -56,8 +56,8 @@
       <th>Nombre</th>
       <th>Tipo</th>
       <th>Peso</th>
-      <th>Presentación</th>
       <th>Precio</th>
+      <th>Fecha Creación</th>
       <th>Foto</th>
       <th>Acciones</th>
     </tr>
@@ -69,8 +69,8 @@
       <td>{{ producto.get_nombre_display }}</td>
       <td>{{ producto.tipo }}</td>
       <td>{{ producto.peso }} kg</td>
-      <td>{{ producto.presentacion }}</td>
       <td>$ {{ producto.precio }}</td>
+      <td>{{ producto.fecha_creacion|date:"d/m/Y H:i" }}</td>
       <td>
           {% if producto.foto %}
             <img src="{{ producto.foto.url }}" alt="Foto del producto">

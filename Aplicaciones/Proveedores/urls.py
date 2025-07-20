@@ -8,4 +8,7 @@ urlpatterns = [
     path('detalle/<int:id>/', views.detalle_proveedor, name='detalle_proveedor'),
     path('editar/<int:id>/', views.editar_proveedor, name='editar_proveedor'),
     path('eliminar/<int:id>/', views.eliminar_proveedor, name='eliminar_proveedor'),
+    
+    path('enviar-telegram/<int:pk>/', views.envio_telegram, name='envio_telegram'),
+    path('procesar-pedido/', views.procesar_pedido, name='procesar_pedido'),
 ]

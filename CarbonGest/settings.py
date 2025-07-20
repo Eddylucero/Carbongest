@@ -144,3 +144,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'luceroeddy8@gmail.com'
 EMAIL_HOST_PASSWORD = 'pmqx whgj cuaa ufjm'
 DEFAULT_FROM_EMAIL = 'luceroeddy8@gmail.com'
+
+# Telegram Bot Settings
+TELEGRAM_BOT_TOKEN = '7877857465:AAE947QFfgkhWJyMMm9nynrzcTfHn3qZ1m8'
