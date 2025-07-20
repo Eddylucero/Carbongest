@@ -30,21 +30,6 @@
     color: #eee;
   }
 </style>
-<script>
-  $(document).ready(function () {
-    const ciudades = [
-      "Pujilí", "Latacunga", "Salcedo", "Saquisilí",
-      "Ambato", "Riobamba", "Quito", "Guayaquil", "Cuenca", "Loja"
-    ];
-    const provincias = [
-      "Cotopaxi", "Tungurahua", "Chimborazo", "Pichincha",
-      "Guayas", "Azuay", "Manabí", "El Oro", "Loja", "Imbabura"
-    ];
-
-    $("#ciudad").autocomplete({ source: ciudades });
-    $("#provincia").autocomplete({ source: provincias });
-  });
-</script>
 
 
 <div class="form-wrap">
@@ -134,8 +119,8 @@
         digits: true
       },
       telefono: {
-        minlength: 7,
-        maxlength: 15,
+        minlength: 10,
+        maxlength: 12,
         digits: true,
         required: true
       },
@@ -210,6 +195,20 @@
         required: "Por favor seleccione un tipo de cliente"
       }
     }
+  });
+
+  $(document).ready(function () {
+    const ciudades = [
+      "Pujilí", "Latacunga", "Salcedo", "Saquisilí",
+      "Ambato", "Riobamba", "Quito", "Guayaquil", "Cuenca", "Loja"
+    ];
+    const provincias = [
+      "Cotopaxi", "Tungurahua", "Chimborazo", "Pichincha",
+      "Guayas", "Azuay", "Manabí", "El Oro", "Loja", "Imbabura"
+    ];
+
+    $("#ciudad").autocomplete({ source: ciudades });
+    $("#provincia").autocomplete({ source: provincias });
   });
 </script>
 
